@@ -37,7 +37,6 @@ module.exports = function(grunt) {
   grunt.registerTask('get-yml-config', function() {
     var obj = yaml.load('mkdocs.yml');
     config['siteDir'] = obj.site_dir || 'site';
-    grunt.log.writeln(JSON.stringify(config, null, 2));
   });
 
   // every hour, local theme package will attempt to upgrade based on the
@@ -70,6 +69,7 @@ module.exports = function(grunt) {
 
   // look for and compile custom markdown
   grunt.registerTask('compile-custom-markdown', function() {
+    grunt.log.writeln(JSON.stringify(config, null, 2));
     grunt.file.recurse(config['siteDir'], function callback(absPath, rootDir, subDir, filename) {
       if (filename.substr(filename.length - 4) == 'html') {
         var html = grunt.file.read(absPath);
