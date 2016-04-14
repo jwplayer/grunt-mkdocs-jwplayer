@@ -8,7 +8,7 @@
 
 'use strict';
 
-var server = require('http-server');
+var Server = require('http-server');
 var yamljs = require('yamljs');
 var shelljs = require('shelljs');
 
@@ -81,9 +81,10 @@ module.exports = function(grunt) {
 
     if (options.disable.indexOf('run-http-server') == -1) {
       // run localhost server
-      var s = server.createServer(options.server);
+      var s = Server.createServer(options.server);
+      grunt.log.writeln(s);
       // start server
-      server.listen(options.server.port, options.server.host, function() {
+      s.listen(options.server.port, options.server.host, function() {
         grunt.log.writeln('server...');
       });
       // shelljs.exec('node_modules/http-server/bin/http-server ' + config['siteDir'] + ' -p 8282 -a 127.0.0.1');
