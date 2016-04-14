@@ -37,6 +37,7 @@ module.exports = function(grunt) {
   grunt.registerTask('get-yml-config', function() {
     var obj = yaml.load('mkdocs.yml');
     config['siteDir'] = obj.site_dir || 'site';
+    grunt.log.writeln(config['siteDir']);
   });
 
   // every hour, local theme package will attempt to upgrade based on the
