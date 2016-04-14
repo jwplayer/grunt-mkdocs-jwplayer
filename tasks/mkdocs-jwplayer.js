@@ -89,6 +89,14 @@ module.exports = function(grunt) {
       disable: []
     });
 
+    if (grunt.options('build')) {
+      grunt.task.run([
+        'upgrade-local-mkdocs-jwplayer-pypi-package',
+        'run-mkdocs-build',
+        'compile-custom-markdown'
+      ]);
+    }
+
     // var options = this.options({
     //
     // });
@@ -102,11 +110,7 @@ module.exports = function(grunt) {
     // grunt.log.writeln(JSON.stringify(options, null, 2));
 
     // default
-    grunt.task.run([
-      'upgrade-local-mkdocs-jwplayer-pypi-package',
-      'run-mkdocs-build',
-      'compile-custom-markdown'
-    ]);
+
 
     // serve
     /*
