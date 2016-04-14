@@ -70,6 +70,7 @@ module.exports = function(grunt) {
   // look for and compile custom markdown
   grunt.registerTask('compile-custom-markdown', function() {
     grunt.file.recurse(config['siteDir'], function callback(absPath, rootDir, subDir, filename) {
+      grunt.log.writeln(filename);
       if (filename.substr(filename.length - 4) == 'html') {
         var html = grunt.file.read(absPath);
         html = html.replace(/(\<[\s\S]\>){1}?(\^\^\^([\s\S]*?)\^\^\^)(<\/[\s\S]\>){1}?/g, function(match, g1, g2, g3, g4, offset, str) {
@@ -89,6 +90,8 @@ module.exports = function(grunt) {
     options = this.options({
       disable: []
     });
+
+    grunt.log.writeln('Building documentation...');
 
     grunt.task.run([
       'run-http-server',
