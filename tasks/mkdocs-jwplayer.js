@@ -14,22 +14,23 @@ var yaml = require('yamljs');
 
 module.exports = function(grunt) {
 
-  // var config = {};
-  // config.pkg = grunt.file.readJSON('package.json');
-  // grunt.initConfig(config);
-
-  // grunt.loadNpmTasks('grunt-contrib-clean');
-
   var config = {};
   var options = {};
 
   // run localhost server
-  grunt.registerTask('http-server', function() {
-    if (options.indexOf('http-server') != -1) {
+  grunt.registerTask('run-http-server', function() {
+    if (options.indexOf('run-http-server') != -1) {
        return;
     }
     grunt.log.writeln('run server here');
     // server.createServer(options);
+  });
+
+  // listen for modified files that trigger rebuild while serving localhost
+  grunt.registerTask('listen-for-modified-files', function() {
+    if (options.indexOf('run-http-server') != -1) {
+       grunt.log.writeln('watch files here');
+    }
   });
 
   // read mkdocs yaml file and convert to json and make data accessible
@@ -89,55 +90,15 @@ module.exports = function(grunt) {
       disable: []
     });
 
-    if (grunt.options('build')) {
-      grunt.task.run([
-        'upgrade-local-mkdocs-jwplayer-pypi-package',
-        'run-mkdocs-build',
-        'compile-custom-markdown'
-      ]);
-    }
+    grunt.task.run([
+      'run-http-server',
+      'upgrade-local-mkdocs-jwplayer-pypi-package',
+      'run-mkdocs-build',
+      'compile-custom-markdown',
+      'listen-for-modified-files'
+    ]);
 
-    // var options = this.options({
-    //
-    // });
-
-    // grunt.log.writeln('Building documentation...');
-    //
-    // this.files.forEach(function(f) {
-    //   grunt.log.writeln(JSON.stringify(f, null, 2));
-    // });
-    //
-    // grunt.log.writeln(JSON.stringify(options, null, 2));
-
-    // default
-
-
-    // serve
-    /*
-    'config-site-dir',
-    'http-server:serve',
-    'grunt:build',
-    'copy:build',
-    'less:build',
-    'postcss:build',
-    'cssmin:build',
-    'shell:mkdocsBuild',
-    'compileCustomMarkdown',
-    'watch:modifiedMarkdown',
-    'message'
-    */
-
-    // serve
-    // grunt.task.run([
-    //   'upgrade-local-mkdocs-jwplayer-pypi-package',
-    //   'get-yml-config',
-    //   'run-mkdocs-build',
-    //   'compile-custom-markdown',
-    //   'http-server',
-    //   '_____watch_____'
-    // ]);
-
-    grunt.log.ok('Success!');
+    // grunt.log.ok('Success!');
 
   });
 
