@@ -10,7 +10,7 @@
 
 var server = require('http-server');
 var yaml = require('yamljs');
-require('shelljs/global');
+var shell = require('shelljs');
 
 module.exports = function(grunt) {
 
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
     // every hour, local theme package will attempt to upgrade based on the
     // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
     // if it does not already exist
-    if (options.disable.indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') != -1) {
+    if (options.disable.indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') == -1) {
       if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
         var lastUpdated = grunt.file.read('.local-mkdocs-jwplayer-last-updated').trim();
         config['localThemeLastUpdated'] = lastUpdated;
@@ -47,13 +47,17 @@ module.exports = function(grunt) {
       var oneHourAgo = now - 3600;
       if (oneHourAgo > config['localThemeLastUpdated']) {
         config['localThemeLastUpdated'] = now;
-        exec('pip install mkdocs-jwplayer --upgrade --force-reinstall');
+        shell.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall', {
+          silent: true
+        });
         grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
       }
     }
 
     // run mkdocs build process
-    exec('mkdocs build');
+    shell.exec('mkdocs build', {
+      silent: true
+    });
 
     // look for and compile custom markdown
     grunt.file.recurse(config['siteDir'], function callback(absPath, rootDir, subDir, filename) {
@@ -69,7 +73,7 @@ module.exports = function(grunt) {
       }
     });
 
-    if (options.disable.indexOf('run-http-server') != -1) {
+    if (options.disable.indexOf('run-http-server') == -1) {
       // run localhost server
       grunt.log.writeln('run server here');
       // listen for modified files that trigger rebuild while serving localhost
