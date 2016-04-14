@@ -85,7 +85,7 @@ module.exports = function(grunt) {
   // });
 
   // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
-  grunt.registerMultiTask('mkdocs-jwplayer', 'local build process for the JW Player custom MkDocs theme', function() {
+  grunt.registerTask('mkdocs-jwplayer', 'local build process for the JW Player custom MkDocs theme', function() {
 
     options = this.options({
       disable: []
