@@ -102,6 +102,6 @@ module.exports = function(grunt) {
   //
   //   // grunt.log.ok('Success!');
   //
-  // });
+  });
 
 };
