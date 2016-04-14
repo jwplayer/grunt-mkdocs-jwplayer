@@ -26,7 +26,8 @@ module.exports = function(grunt) {
       server: {
         host: '127.0.0.1',
         port: 8282,
-        root: null
+        root: null,
+        runInBackground: true
       }
     });
 
@@ -80,10 +81,7 @@ module.exports = function(grunt) {
 
     if (options.disable.indexOf('run-http-server') == -1) {
       // run localhost server
-      var server = httpServer.createServer(options.server);
-      server.listen(options.server.port, options.server.host, function() {
-        grunt.log.ok('Server started...');
-      });
+      shelljs.exec('node_modules/http-server/bin/http-server ' + options.server.root + ' -p=8282 -a=127.0.0.1 -s ');
       // listen for modified files that trigger rebuild while serving localhost
       grunt.log.writeln('watch files here');
     }
