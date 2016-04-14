@@ -12,6 +12,7 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
     jshint: {
       all: [
         'Gruntfile.js',
@@ -26,6 +27,16 @@ module.exports = function(grunt) {
     // Before generating any new files, remove any previously-created files.
     clean: {
       tests: ['tmp']
+    },
+
+    bump: {
+      options: {
+        files: ['package.json'],
+        updateConfigs: ['pkg'],
+        commit: false,
+        createTag: false,
+        push: false
+      }
     },
 
     // Configuration to be run (and then tested).
@@ -54,6 +65,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
+  grunt.loadNpmTasks('grunt-bump');
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
