@@ -19,7 +19,7 @@ module.exports = function(grunt) {
 
   // run localhost server
   grunt.registerTask('run-http-server', function() {
-    if (options.indexOf('run-http-server') != -1) {
+    if (options.disable.indexOf('run-http-server') != -1) {
        return;
     }
     grunt.log.writeln('run server here');
@@ -28,7 +28,7 @@ module.exports = function(grunt) {
 
   // listen for modified files that trigger rebuild while serving localhost
   grunt.registerTask('listen-for-modified-files', function() {
-    if (options.indexOf('run-http-server') != -1) {
+    if (options.disable.indexOf('run-http-server') != -1) {
        grunt.log.writeln('watch files here');
     }
   });
