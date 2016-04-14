@@ -43,7 +43,7 @@ module.exports = function(grunt) {
   // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
   // if it does not already exist
   grunt.registerTask('upgrade-local-mkdocs-jwplayer-pypi-package', function() {
-    if (options.indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') != -1) {
+    if (options.disable.indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') != -1) {
        return;
     }
     if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
