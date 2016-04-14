@@ -8,7 +8,7 @@
 
 'use strict';
 
-var httpServer = require('http-server');
+var server = require('http-server');
 var yamljs = require('yamljs');
 var shelljs = require('shelljs');
 
@@ -36,6 +36,7 @@ module.exports = function(grunt) {
     // read mkdocs yaml file and convert to json and make data accessible
     var mkdocsYml = yamljs.load('mkdocs.yml');
     config['siteDir'] = mkdocsYml.site_dir || 'site';
+    options.server.root = config['siteDir'];
 
     // every hour, local theme package will attempt to upgrade based on the
     // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
@@ -80,11 +81,14 @@ module.exports = function(grunt) {
 
     if (options.disable.indexOf('run-http-server') == -1) {
       // run localhost server
-      shelljs.exec('node_modules/http-server/bin/http-server ' + config['siteDir'] + ' -p 8282 -a 127.0.0.1', function() {
-        grunt.log.writeln('worked');
+      var s = server.createServer(options.server);
+      // start server
+      server.listen(options.server.port, options.server.host, function() {
+        grunt.log.writeln('server...');
       });
+      // shelljs.exec('node_modules/http-server/bin/http-server ' + config['siteDir'] + ' -p 8282 -a 127.0.0.1');
       // listen for modified files that trigger rebuild while serving localhost
-      grunt.log.writeln('watch files here');
+      // grunt.log.writeln('watch files here');
     }
 
     // grunt.log.ok('Success!');
