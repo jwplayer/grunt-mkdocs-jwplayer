@@ -36,6 +36,7 @@ module.exports = function(grunt) {
     // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
     // if it does not already exist
     if (options.disable.indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') == -1) {
+      grunt.log.writeln('upgrade-local-mkdocs-jwplayer-pypi-package');
       if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
         var lastUpdated = grunt.file.read('.local-mkdocs-jwplayer-last-updated').trim();
         config['localThemeLastUpdated'] = lastUpdated;
