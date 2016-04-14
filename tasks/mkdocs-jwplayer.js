@@ -8,9 +8,9 @@
 
 'use strict';
 
-var server = require('http-server');
-var yaml = require('yamljs');
-var shell = require('shelljs');
+var httpServer = require('http-server');
+var yamljs = require('yamljs');
+var shelljs = require('shelljs');
 
 module.exports = function(grunt) {
 
@@ -22,21 +22,25 @@ module.exports = function(grunt) {
 
     // default options
     options = this.options({
-      disable: []
+      disable: [],
+      server: {
+        host: '127.0.0.1',
+        port: 8282,
+        root: null
+      }
     });
 
     // initial message
     grunt.log.writeln('Building documentation...');
 
     // read mkdocs yaml file and convert to json and make data accessible
-    var obj = yaml.load('mkdocs.yml');
-    config['siteDir'] = obj.site_dir || 'site';
+    var mkdocsYml = yamljs.load('mkdocs.yml');
+    config['siteDir'] = mkdocsYml.site_dir || 'site';
 
     // every hour, local theme package will attempt to upgrade based on the
     // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
     // if it does not already exist
     if (options.disable.indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') == -1) {
-      grunt.log.writeln('upgrade-local-mkdocs-jwplayer-pypi-package');
       if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
         var lastUpdated = grunt.file.read('.local-mkdocs-jwplayer-last-updated').trim();
         config['localThemeLastUpdated'] = lastUpdated;
@@ -48,7 +52,7 @@ module.exports = function(grunt) {
       var oneHourAgo = now - 3600;
       if (oneHourAgo > config['localThemeLastUpdated']) {
         config['localThemeLastUpdated'] = now;
-        shell.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall', {
+        shelljs.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall', {
           silent: true
         });
         grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
@@ -56,7 +60,7 @@ module.exports = function(grunt) {
     }
 
     // run mkdocs build process
-    shell.exec('mkdocs build', {
+    shelljs.exec('mkdocs build', {
       silent: true
     });
 
@@ -76,7 +80,10 @@ module.exports = function(grunt) {
 
     if (options.disable.indexOf('run-http-server') == -1) {
       // run localhost server
-      grunt.log.writeln('run server here');
+      var server = httpServer.createServer(options.server);
+      server.listen(options.server.port, options.server.host, function() {
+        grunt.log.ok('Server started...');
+      });
       // listen for modified files that trigger rebuild while serving localhost
       grunt.log.writeln('watch files here');
     }
