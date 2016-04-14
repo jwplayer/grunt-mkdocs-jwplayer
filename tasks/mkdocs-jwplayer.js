@@ -17,58 +17,45 @@ module.exports = function(grunt) {
   var config = {};
   var options = {};
 
-  // run localhost server
-  grunt.registerTask('run-http-server', function() {
-    if (options.disable.indexOf('run-http-server') != -1) {
-       return;
-    }
-    grunt.log.writeln('run server here');
-    // server.createServer(options);
-  });
+  // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
+  grunt.registerTask('mkdocs-jwplayer', function() {
 
-  // listen for modified files that trigger rebuild while serving localhost
-  grunt.registerTask('listen-for-modified-files', function() {
-    if (options.disable.indexOf('run-http-server') != -1) {
-       grunt.log.writeln('watch files here');
-    }
-  });
+    // default options
+    options = this.options({
+      disable: []
+    });
 
-  // read mkdocs yaml file and convert to json and make data accessible
-  grunt.registerTask('get-yml-config', function() {
+    // initial message
+    grunt.log.writeln('Building documentation...');
+
+    // read mkdocs yaml file and convert to json and make data accessible
     var obj = yaml.load('mkdocs.yml');
     config['siteDir'] = obj.site_dir || 'site';
-  });
 
-  // every hour, local theme package will attempt to upgrade based on the
-  // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
-  // if it does not already exist
-  grunt.registerTask('upgrade-local-mkdocs-jwplayer-pypi-package', function() {
+    // every hour, local theme package will attempt to upgrade based on the
+    // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
+    // if it does not already exist
     if (options.disable.indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') != -1) {
-       return;
+      if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
+        var lastUpdated = grunt.file.read('.local-mkdocs-jwplayer-last-updated').trim();
+        config['localThemeLastUpdated'] = lastUpdated;
+      } else {
+        grunt.file.write('.local-mkdocs-jwplayer-last-updated', 0);
+        config['localThemeLastUpdated'] = 0;
+      }
+      var now = Math.floor(Date.now() / 1000);
+      var oneHourAgo = now - 3600;
+      if (oneHourAgo > config['localThemeLastUpdated']) {
+        config['localThemeLastUpdated'] = now;
+        exec('pip install mkdocs-jwplayer --upgrade --force-reinstall');
+        grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
+      }
     }
-    if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
-      var lastUpdated = grunt.file.read('.local-mkdocs-jwplayer-last-updated').trim();
-      config['localThemeLastUpdated'] = lastUpdated;
-    } else {
-      grunt.file.write('.local-mkdocs-jwplayer-last-updated', 0);
-      config['localThemeLastUpdated'] = 0;
-    }
-    var now = Math.floor(Date.now() / 1000);
-    var oneHourAgo = now - 3600;
-    if (oneHourAgo > config['localThemeLastUpdated']) {
-      config['localThemeLastUpdated'] = now;
-      exec('pip install mkdocs-jwplayer --upgrade --force-reinstall');
-      grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
-    }
-  });
 
-  // run mkdocs build process
-  grunt.registerTask('run-mkdocs-build', function() {
+    // run mkdocs build process
     exec('mkdocs build');
-  });
 
-  // look for and compile custom markdown
-  grunt.registerTask('compile-custom-markdown', function() {
+    // look for and compile custom markdown
     grunt.file.recurse(config['siteDir'], function callback(absPath, rootDir, subDir, filename) {
       if (filename.substr(filename.length - 4) == 'html') {
         var html = grunt.file.read(absPath);
@@ -81,23 +68,13 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
-  });
 
-  // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
-  grunt.registerTask('mkdocs-jwplayer', function() {
-
-    options = this.options({
-      disable: []
-    });
-
-    grunt.log.writeln('Building documentation...');
-
-    grunt.task.run([
-      'get-yml-config',
-      'upgrade-local-mkdocs-jwplayer-pypi-package',
-      'run-mkdocs-build',
-      'compile-custom-markdown'
-    ]);
+    if (options.disable.indexOf('run-http-server') != -1) {
+      // run localhost server
+      grunt.log.writeln('run server here');
+      // listen for modified files that trigger rebuild while serving localhost
+      grunt.log.writeln('watch files here');
+    }
 
     // grunt.log.ok('Success!');
 
