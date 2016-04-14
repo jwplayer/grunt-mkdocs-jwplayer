@@ -83,25 +83,22 @@ module.exports = function(grunt) {
       }
     });
 
-    watch.watchTree(config.docsDir, function () {
-      grunt.log.writeln('test');
-    });
+    if (options.disable.indexOf('run-http-server') == -1) {
+      // run localhost server
+      shelljs.exec('node_modules/http-server/bin/http-server ' + config.siteDir + ' -p ' + options.server.port + ' -a ' + options.server.host, {
+        silent: true,
+        async: true
+      });
+      grunt.log.ok('Serving `' + config.siteDir + '` on http://' + options.server.host + ':' + options.server.port)
+      grunt.log.writeln('Press CTRL-C to stop server.')
+      // listen for modified files that trigger rebuild while serving localhost
+      watch.watchTree(config.docsDir, function () {
+        grunt.log.writeln('test');
+      });
+    }
 
-  //   if (options.disable.indexOf('run-http-server') == -1) {
-  //     // run localhost server
-  //     var s = server.createServer(config.siteDir, options.server);
-  //     s.listen();
-  //     shelljs.exec('node_modules/http-server/bin/http-server ' + config.siteDir + ' -p ' + options.server.port + ' -a ' + options.server.host, {
-  //       silent: true
-  //     });
-  //     grunt.log.ok('Serving `' + config.siteDir + '` on http://' + options.server.host + ':' + options.server.port)
-  //     grunt.log.writeln('Press CTRL-C to stop server.')
-  //     // listen for modified files that trigger rebuild while serving localhost
-  //     grunt.log.writeln('watch files here');
-  //   }
-  //
-  //   // grunt.log.ok('Success!');
-  //
+    // grunt.log.ok('Success!');
+
   });
 
 };
