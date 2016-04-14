@@ -11,7 +11,7 @@
 var server = require('http-server');
 var yamljs = require('yamljs');
 var shelljs = require('shelljs');
-var watch = require('watch');
+require('watch');
 
 module.exports = function(grunt) {
 
