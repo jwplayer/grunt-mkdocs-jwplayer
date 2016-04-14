@@ -36,7 +36,7 @@ module.exports = function(grunt) {
   // read mkdocs yaml file and convert to json and make data accessible
   grunt.registerTask('get-yml-config', function() {
     var obj = yaml.load('mkdocs.yml');
-    config['siteDir'] = obj.site_dir || 'site';
+    config['siteDir'] = obj.site_dir;
     grunt.log.writeln(config['siteDir']);
   });
 
@@ -71,7 +71,6 @@ module.exports = function(grunt) {
   // look for and compile custom markdown
   grunt.registerTask('compile-custom-markdown', function() {
     grunt.file.recurse(config['siteDir'], function callback(absPath, rootDir, subDir, filename) {
-      grunt.log.writeln(filename);
       if (filename.substr(filename.length - 4) == 'html') {
         var html = grunt.file.read(absPath);
         html = html.replace(/(\<[\s\S]\>){1}?(\^\^\^([\s\S]*?)\^\^\^)(<\/[\s\S]\>){1}?/g, function(match, g1, g2, g3, g4, offset, str) {
