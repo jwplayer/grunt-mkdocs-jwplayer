@@ -95,11 +95,10 @@ module.exports = function(grunt) {
     grunt.log.writeln('Building documentation...');
 
     grunt.task.run([
-      'run-http-server',
+      'get-yml-config',
       'upgrade-local-mkdocs-jwplayer-pypi-package',
       'run-mkdocs-build',
-      'compile-custom-markdown',
-      'listen-for-modified-files'
+      'compile-custom-markdown'
     ]);
 
     // grunt.log.ok('Success!');
