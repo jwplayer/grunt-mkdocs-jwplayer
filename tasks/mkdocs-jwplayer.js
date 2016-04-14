@@ -8,14 +8,16 @@
 
 'use strict';
 
-var httpServer = require('http-server');
+var server = require('http-server');
 var yamljs = require('yamljs');
 var shelljs = require('shelljs');
+var watch = require('watch');
 
 module.exports = function(grunt) {
 
   var config = {
-    siteDir: 'site'
+    siteDir: 'site',
+    docsDir: 'docs'
   };
   var options = {};
 
@@ -38,6 +40,7 @@ module.exports = function(grunt) {
     // read mkdocs yaml file and convert to json and make data accessible
     var mkdocsYml = yamljs.load('mkdocs.yml');
     config.siteDir = mkdocsYml.site_dir || config.siteDir;
+    config.docsDir = mkdocsYml.docs_dir || config.docsDir;
 
     // every hour, local theme package will attempt to upgrade based on the
     // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
@@ -80,21 +83,25 @@ module.exports = function(grunt) {
       }
     });
 
-    this.async();
+    watch.watchTree(config.docsDir, function () {
+      grunt.log.writeln('test');
+    });
 
-    if (options.disable.indexOf('run-http-server') == -1) {
-      // run localhost server
-      shelljs.exec('node_modules/http-server/bin/http-server ' + config.siteDir + ' -p ' + options.server.port + ' -a ' + options.server.host, {
-        silent: true
-      });
-      grunt.log.ok('Serving `' + config.siteDir + '` on http://' + options.server.host + ':' + options.server.port)
-      grunt.log.writeln('Press CTRL-C to stop server.')
-      // listen for modified files that trigger rebuild while serving localhost
-      grunt.log.writeln('watch files here');
-    }
-
-    // grunt.log.ok('Success!');
-
-  });
+  //   if (options.disable.indexOf('run-http-server') == -1) {
+  //     // run localhost server
+  //     var s = server.createServer(config.siteDir, options.server);
+  //     s.listen();
+  //     shelljs.exec('node_modules/http-server/bin/http-server ' + config.siteDir + ' -p ' + options.server.port + ' -a ' + options.server.host, {
+  //       silent: true
+  //     });
+  //     grunt.log.ok('Serving `' + config.siteDir + '` on http://' + options.server.host + ':' + options.server.port)
+  //     grunt.log.writeln('Press CTRL-C to stop server.')
+  //     // listen for modified files that trigger rebuild while serving localhost
+  //     grunt.log.writeln('watch files here');
+  //   }
+  //
+  //   // grunt.log.ok('Success!');
+  //
+  // });
 
 };
