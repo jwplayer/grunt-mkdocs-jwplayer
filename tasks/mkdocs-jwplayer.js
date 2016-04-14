@@ -80,7 +80,9 @@ module.exports = function(grunt) {
 
     if (options.disable.indexOf('run-http-server') == -1) {
       // run localhost server
-      shelljs.exec('node_modules/http-server/bin/http-server ' + config['siteDir'] + ' -p 8282 -a 127.0.0.1');
+      shelljs.exec('node_modules/http-server/bin/http-server ' + config['siteDir'] + ' -p 8282 -a 127.0.0.1', {
+        silent: true
+      });
       // listen for modified files that trigger rebuild while serving localhost
       grunt.log.writeln('watch files here');
     }
