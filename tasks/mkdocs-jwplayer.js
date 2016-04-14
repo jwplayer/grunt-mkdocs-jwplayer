@@ -83,7 +83,8 @@ module.exports = function(grunt) {
     if (options.disable.indexOf('run-http-server') == -1) {
       // run localhost server
       shelljs.exec('node_modules/http-server/bin/http-server ' + config.siteDir + ' -p ' + options.server.port + ' -a ' + options.server.host, {
-        silent: true
+        silent: true,
+        async: true
       });
       grunt.log.ok('Serving `' + config.siteDir + '` on http://' + options.server.host + ':' + options.server.port)
       grunt.log.writeln('Press CTRL-C to stop server.')
