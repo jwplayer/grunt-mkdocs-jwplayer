@@ -9,8 +9,8 @@
 'use strict';
 
 var server = require('http-server');
-var command = require('shell-task');
 var yaml = require('yamljs');
+var shell = require('shelljs/global');
 
 module.exports = function(grunt) {
 
@@ -57,19 +57,18 @@ module.exports = function(grunt) {
     var oneHourAgo = now - 3600;
     if (oneHourAgo > config['localThemeLastUpdated']) {
       config['localThemeLastUpdated'] = now;
-      new command('pip install mkdocs-jwplayer --upgrade --force-reinstall');
+      shell.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall');
       grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
     }
   });
 
   // run mkdocs build process
   grunt.registerTask('run-mkdocs-build', function() {
-    new command('mkdocs build');
+    shell.exec('mkdocs build');
   });
 
   // look for and compile custom markdown
   grunt.registerTask('compile-custom-markdown', function() {
-    grunt.log.writeln(JSON.stringify(config, null, 2));
     grunt.file.recurse(config['siteDir'], function callback(absPath, rootDir, subDir, filename) {
       if (filename.substr(filename.length - 4) == 'html') {
         var html = grunt.file.read(absPath);
