@@ -80,9 +80,10 @@ module.exports = function(grunt) {
       }
     });
 
+    this.async();
+
     if (options.disable.indexOf('run-http-server') == -1) {
       // run localhost server
-      shelljs.async = true;
       shelljs.exec('node_modules/http-server/bin/http-server ' + config.siteDir + ' -p ' + options.server.port + ' -a ' + options.server.host, {
         silent: true
       });
