@@ -10,7 +10,7 @@
 
 var server = require('http-server');
 var yaml = require('yamljs');
-var shell = require('shelljs/global');
+require('shelljs/global');
 
 module.exports = function(grunt) {
 
@@ -57,14 +57,14 @@ module.exports = function(grunt) {
     var oneHourAgo = now - 3600;
     if (oneHourAgo > config['localThemeLastUpdated']) {
       config['localThemeLastUpdated'] = now;
-      shell.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall');
+      exec('pip install mkdocs-jwplayer --upgrade --force-reinstall');
       grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
     }
   });
 
   // run mkdocs build process
   grunt.registerTask('run-mkdocs-build', function() {
-    shell.exec('mkdocs build');
+    exec('mkdocs build');
   });
 
   // look for and compile custom markdown

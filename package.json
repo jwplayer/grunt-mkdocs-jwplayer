@@ -1,7 +1,7 @@
 {
   "name": "grunt-mkdocs-jwplayer",
   "description": "JW Player's custom MkDocs build process using Grunt to replace use of mkdocs commands.",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "homepage": "https://github.com/jwplayer/grunt-mkdocs-jwplayer",
   "author": {
     "name": "Matthew Martindale",
