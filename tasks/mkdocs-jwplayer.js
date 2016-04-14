@@ -36,8 +36,8 @@ module.exports = function(grunt) {
   // read mkdocs yaml file and convert to json and make data accessible
   grunt.registerTask('get-yml-config', function() {
     var obj = yaml.load('mkdocs.yml');
-    config['siteDir'] = obj.site_dir;
-    grunt.log.writeln(config['siteDir']);
+    config['siteDir'] = obj.site_dir || 'site';
+    grunt.log.writeln(JSON.stringify(config, null, 2));
   });
 
   // every hour, local theme package will attempt to upgrade based on the
