@@ -22,9 +22,6 @@ module.exports = function(grunt) {
     serve: false
   });
 
-  // default state variables
-  grunt.config('watching', false);
-
   // shh
   var shh = {
     json: function(msg) {
