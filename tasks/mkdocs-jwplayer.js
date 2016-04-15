@@ -34,7 +34,7 @@ module.exports = function(grunt) {
     },
     header: function(msg) {
       grunt.log.muted = false;
-      grunt.log.subhead(msg);
+      grunt.log.header(msg);
       grunt.log.muted = true;
     },
     subhead: function(msg) {
