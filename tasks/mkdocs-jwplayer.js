@@ -22,7 +22,16 @@ module.exports = function(grunt) {
     serve: false
   });
 
+  // default state variables
+  grunt.config('watching', false);
+
+  // shh
   var shh = {
+    json: function(msg) {
+      grunt.log.muted = false;
+      grunt.log.writeln(JSON.stringify(msg, null, 2));
+      grunt.log.muted = true;
+    },
     ok: function(msg) {
       grunt.log.muted = false;
       grunt.log.ok(msg);
@@ -61,18 +70,18 @@ module.exports = function(grunt) {
   // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
   // if it does not already exist
   grunt.registerTask('upgrade-local-mkdocs-jwplayer-pypi-package', function() {
-    if (grunt.config('plugin.isSource')) {
+    if (!grunt.config('plugin.isSource')) {
       if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
         var lastUpdated = grunt.file.read('.local-mkdocs-jwplayer-last-updated').trim();
-        config['localThemeLastUpdated'] = lastUpdated;
+        grunt.config('plugin.localThemeLastUpdated', lastUpdated);
       } else {
         grunt.file.write('.local-mkdocs-jwplayer-last-updated', 0);
-        config['localThemeLastUpdated'] = 0;
+        grunt.config('plugin.localThemeLastUpdated', 0);
       }
       var now = Math.floor(Date.now() / 1000);
       var oneHourAgo = now - 3600;
       if (oneHourAgo > config['localThemeLastUpdated']) {
-        config['localThemeLastUpdated'] = now;
+        grunt.config('plugin.localThemeLastUpdated', now);
         shelljs.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall', {
           silent: true
         });
@@ -103,9 +112,10 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
-    shh.ok('Documentation built.');
+    shh.ok('Documentation built');
   });
 
+  // run localhost server is serve option is configured
   grunt.registerTask('run-http-server', function() {
     if (grunt.config('plugin.serve')) {
       grunt.config('connect', {
@@ -120,8 +130,8 @@ module.exports = function(grunt) {
               shh.ok('Serving `' + grunt.config('plugin.siteDir')
                 + '` on http://'
                 + grunt.config('plugin.serve.hostname') + ':'
-                + grunt.config('plugin.serve.port') + '\n');
-              shh.ok('Press CTRL-C to stop server.\n');
+                + grunt.config('plugin.serve.port'));
+              shh.ok('Press CTRL-C to stop server');
             }
           }
         }
@@ -130,38 +140,46 @@ module.exports = function(grunt) {
     }
   });
 
+  // watch for modified files that impact documentation build and rebuild
+  // documentation if something is detected
   grunt.registerTask('watch-for-modified-files', function() {
     if (grunt.config('plugin.serve')) {
       grunt.config('watch', {
         files: ['**/*.md', 'mkdocs.yml'],
         tasks: [
+          'write-watch-event-message',
           'get-mkdocs-yaml-config',
           'run-mkdocs-build',
           'compile-custom-markdown'
         ]
       });
       grunt.task.run('watch');
-      shh.ok('Watching for documentation changes...');
+      shh.writeln('\nWatching for documentation changes...');
     }
+  });
+
+  // message to display when watch event occurs
+  grunt.registerTask('write-watch-event-message', function() {
+    shh.writeln('\nRebuilding documentation...');
   });
 
   // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
   grunt.registerMultiTask('mkdocs-jwplayer', function() {
 
-    // if serve task option was set to true, use default settings
-    if (this.options().serve === true) {
-      this.options().serve = {
-        hostname: '127.0.0.1',
-        port: 8000,
-        root: 'site'
-      }
-    }
-
     // merge plugin config with any defined task options
     grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
 
-    // initial message to user
-    shh.header('Robot Matt is at your service...');
+    // if serve task option was set to true, use default settings
+    if (grunt.config('plugin.serve') === true) {
+      grunt.config('plugin.serve', {
+        hostname: '127.0.0.1',
+        port: 8000,
+        root: 'site'
+      });
+    }
+
+    // initial messages to user
+    shh.header('\nRobot Matt is building your documentation...\n');
 
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
