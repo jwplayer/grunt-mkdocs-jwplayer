@@ -10,13 +10,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   // global config
-  var config = {
-    siteDir: 'site',
-    docsDir: 'docs'
-  };
-
-  // global options
-  var options = {};
+  var config = {};
 
   // read mkdocs yaml file and convert to json and make data accessible
   grunt.registerTask('get-mkdocs-yaml-config', function() {
@@ -29,7 +23,7 @@ module.exports = function(grunt) {
   // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
   // if it does not already exist
   grunt.registerTask('upgrade-local-mkdocs-jwplayer-pypi-package', function() {
-    if (options.disable.indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') == -1) {
+    if (config.disable.indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') == -1) {
       if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
         var lastUpdated = grunt.file.read('.local-mkdocs-jwplayer-last-updated').trim();
         config['localThemeLastUpdated'] = lastUpdated;
@@ -73,21 +67,21 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('run-http-server', function() {
-    if (options.disable.indexOf('run-http-server') == -1) {
+    if (config.disable.indexOf('run-http-server') == -1) {
       grunt.config('connect', {
         server: {
           options: {
-            hostname: options.server.hostname,
-            port: options.server.port,
-            base: options.server.root,
+            hostname: config.server.hostname,
+            port: config.server.port,
+            base: config.server.root,
             useAvailablePort: true,
             open: true,
             livereload: true,
             onCreateServer: function(server, connect, options) {
               grunt.log.ok('Serving `' + config.siteDir
                 + '` on http://'
-                + options.server.hostname + ':'
-                + options.server.port)
+                + config.server.hostname + ':'
+                + config.server.port)
               grunt.log.writeln('Press CTRL-C to stop server.');
               grunt.config('watch', {
                 files: ['**/*.md', 'mkdocs.yml'],
@@ -113,12 +107,14 @@ module.exports = function(grunt) {
     grunt.log.header = function() {};
 
     // default options
-    options = this.options({
+    config = this.options({
+      siteDir: 'site',
+      docsDir: 'docs',
       disable: [],
       server: {
         hostname: '127.0.0.1',
         port: 8000,
-        root: config.siteDir
+        root: 'site'
       }
     });
 
