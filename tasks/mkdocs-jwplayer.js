@@ -37,6 +37,11 @@ module.exports = function(grunt) {
       grunt.log.subhead(msg);
       grunt.log.muted = true;
     },
+    write: function(msg) {
+      grunt.log.muted = false;
+      grunt.log.write(msg);
+      grunt.log.muted = true;
+    },
     writeln: function(msg) {
       grunt.log.muted = false;
       grunt.log.writeln(msg);
