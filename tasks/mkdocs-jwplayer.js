@@ -110,6 +110,7 @@ module.exports = function(grunt) {
     if (grunt.config('plugin.disable').indexOf('run-http-server') == -1) {
       grunt.log.header = function() {};
       grunt.config('watch', {
+        livereload: true,
         files: ['**/*.md', 'mkdocs.yml'],
         tasks: [
           'get-mkdocs-yaml-config',
