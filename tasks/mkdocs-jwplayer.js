@@ -151,28 +151,7 @@ module.exports = function(grunt) {
     grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
 
     // initial message to user
-
     logrunt.subhead('Robot Matt is at your service...');
-
-    logrunt.write('              ,\n'
-      + '       __,.._; )\n'
-      + '  ,--``\' / ,";,\\n'
-      + '  |   __; `-\'   ;\n'
-      + '  |```          ;                          _\n'
-      + '  \'-""`!------\'/                      _,-\'`/\n'
-      + '   "===`-\'"|_|"                 ____,(__,-\'\n'
-      + '          (ctr`.________,,---``` ;__|\n'
-      + '          | ,-"""""\-..._____,"""""-.\n'
-      + '          |;;;\'\'\'\':::````:::; ;\'\'\'\': :\n'
-      + '          (( .---.  ))     ( ( .---.) )\n'
-      + '           : \    \ ;  ____ : /    / ;\n'
-      + '            \ |````|\',-"----`-|    |\'\n'
-      + '             (`----\'          `----\'\n'
-      + '             /(____\          /____)\n'
-      + '          ,-\ /   /          ,\    \\n'
-      + '         (_ _/   /          (__\    \\n'
-      + '          ,-\   /               ;-._ |\n'
-      + '         (___)_/               (____\|');
 
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
