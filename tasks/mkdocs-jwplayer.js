@@ -14,6 +14,8 @@ module.exports = function(grunt) {
 
   // read mkdocs yaml file and convert to json and make data accessible
   grunt.registerTask('get-mkdocs-yaml-config', function() {
+    // surpress log headers for tasks occuring in plugin
+    grunt.log.header = function() {};
     var mkdocsYml = yamljs.load('mkdocs.yml');
     config.siteDir = mkdocsYml.site_dir || config.siteDir;
     config.docsDir = mkdocsYml.docs_dir || config.docsDir;
@@ -45,6 +47,8 @@ module.exports = function(grunt) {
 
   // run mkdocs build process
   grunt.registerTask('run-mkdocs-build', function() {
+    // surpress log headers for tasks occuring in plugin
+    grunt.log.header = function() {};
     shelljs.exec('mkdocs build', {
       silent: true
     });
@@ -52,6 +56,8 @@ module.exports = function(grunt) {
 
   // look for and compile custom markdown
   grunt.registerTask('compile-custom-markdown', function() {
+    // surpress log headers for tasks occuring in plugin
+    grunt.log.header = function() {};
     grunt.file.recurse(config.siteDir, function callback(absPath, rootDir, subDir, filename) {
       if (filename.substr(filename.length - 4) == 'html') {
         var html = grunt.file.read(absPath);
