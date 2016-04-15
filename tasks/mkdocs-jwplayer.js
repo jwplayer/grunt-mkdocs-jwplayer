@@ -7,7 +7,7 @@ var objectMerge = require('object-merge');
 module.exports = function(grunt) {
 
   // surpress log headers for tasks occuring in plugin
-  grunt.log.header = function() {};
+  // grunt.log.header = function() {};
   grunt.log.muted = true;
 
   // grunt.loadNpmTasks('grunt-http-server');
@@ -30,6 +30,11 @@ module.exports = function(grunt) {
     ok: function(msg) {
       grunt.log.muted = false;
       grunt.log.ok(msg);
+      grunt.log.muted = true;
+    },
+    header: function(msg) {
+      grunt.log.muted = false;
+      grunt.log.subhead(msg);
       grunt.log.muted = true;
     },
     subhead: function(msg) {
@@ -151,7 +156,7 @@ module.exports = function(grunt) {
     grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
 
     // initial message to user
-    shh.subhead('Robot Matt is at your service...');
+    shh.header('Robot Matt is at your service...');
 
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
