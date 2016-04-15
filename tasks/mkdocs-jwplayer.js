@@ -135,6 +135,9 @@ module.exports = function(grunt) {
     // merge plugin config with any defined task options
     grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
 
+    // initial message to user
+    grunt.log.subhead('Robot Matt is at your service...');
+
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
     grunt.task.run('upgrade-local-mkdocs-jwplayer-pypi-package');
