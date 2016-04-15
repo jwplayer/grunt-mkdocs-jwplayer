@@ -12,8 +12,8 @@ module.exports = function(grunt) {
   // read mkdocs yaml file and convert to json and make data accessible
   grunt.registerTask('get-mkdocs-yaml-config', function() {
     var mkdocsYml = yamljs.load('mkdocs.yml');
-    grunt.config('plugin.siteDir', mkdocsYml.site_dir || config.siteDir);
-    grunt.config('plugin.docsDir', mkdocsYml.docs_dir || config.docsDir);
+    grunt.config('plugin.siteDir', mkdocsYml.site_dir || grunt.config('plugin.siteDir'));
+    grunt.config('plugin.docsDir', mkdocsYml.docs_dir || grunt.config('plugin.docsDir'));
   });
 
   // every hour, local theme package will attempt to upgrade based on the
