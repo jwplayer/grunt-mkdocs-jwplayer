@@ -49,6 +49,7 @@ module.exports = function(grunt) {
 
   // look for and compile custom markdown
   grunt.registerTask('compile-custom-markdown', function() {
+    grunt.log.writeln(grunt.config('plugin.siteDir'));
     grunt.file.recurse(grunt.config('plugin.siteDir'), function callback(absPath, rootDir, subDir, filename) {
       if (filename.substr(filename.length - 4) == 'html') {
         var html = grunt.file.read(absPath);
@@ -68,9 +69,9 @@ module.exports = function(grunt) {
       grunt.config('connect', {
         server: {
           options: {
-            hostname: '<%= plugin.server.hostname %>',
-            port: '<%= plugin.server.port %>',
-            base: '<%= plugin.server.root %>',
+            hostname: grunt.config('plugin.server.hostname'),
+            port: grunt.config('plugin.server.port'),
+            base: grunt.config('plugin.server.root'),
             useAvailablePort: true,
             open: true,
             livereload: true,
