@@ -86,11 +86,11 @@ module.exports = function(grunt) {
             onCreateServer: function(server, connect, options) {
               grunt.log.ok('Serving `' + config.siteDir
                 + '` on http://'
-                + this.hostname + ':'
-                + this.port)
+                + options.server.hostname + ':'
+                + options.server.port)
               grunt.log.writeln('Press CTRL-C to stop server.');
               grunt.config('watch', {
-                files: ['**/*.md'],
+                files: ['**/*.md', 'mkdocs.yml'],
                 tasks: [
                   'get-mkdocs-yaml-config',
                   'run-mkdocs-build',
