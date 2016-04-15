@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:jwplayer/mkdocs-jwplayer.git"
+    "url": "git@github.com:jwplayer/grunt-mkdocs-jwplayer.git"
   },
   "bugs": {
     "url": "https://github.com/jwplayer/grunt-mkdocs-jwplayer/issues"
