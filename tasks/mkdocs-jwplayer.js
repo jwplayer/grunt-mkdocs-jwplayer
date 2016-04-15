@@ -53,7 +53,9 @@ module.exports = function(grunt) {
           silent: true
         });
         grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
+        grunt.log.muted = false;
         grunt.log.ok('Upgraded `mkdocs-jwplayer` theme package.');
+        grunt.log.muted = true;
       }
     }
   });
@@ -79,7 +81,9 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
+    grunt.log.muted = false;
     grunt.log.ok('Documentation built.');
+    grunt.log.muted = true;
   });
 
   grunt.registerTask('run-http-server', function() {
@@ -93,12 +97,13 @@ module.exports = function(grunt) {
             useAvailablePort: true,
             open: true,
             onCreateServer: function(server, connect, options) {
-              grunt.log.header = function() {};
+              grunt.log.muted = false;
               grunt.log.ok('Serving `' + grunt.config('plugin.siteDir')
                 + '` on http://'
                 + grunt.config('plugin.server.hostname') + ':'
                 + grunt.config('plugin.server.port') + '\n');
               grunt.log.ok('Press CTRL-C to stop server.\n');
+              grunt.log.muted = true;
             }
           }
         }
@@ -109,7 +114,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('watch-for-modified-files', function() {
     if (grunt.config('plugin.disable').indexOf('run-http-server') == -1) {
-      grunt.log.header = function() {};
       grunt.config('watch', {
         files: ['**/*.md', 'mkdocs.yml'],
         tasks: [
@@ -119,6 +123,9 @@ module.exports = function(grunt) {
         ]
       });
       grunt.task.run('watch');
+      grunt.log.muted = false;
+      grunt.log.ok('Watching for documentation changes...\n');
+      grunt.log.muted = true;
     }
   });
 
