@@ -6,6 +6,9 @@ var objectMerge = require('object-merge');
 
 module.exports = function(grunt) {
 
+  // surpress log headers for tasks occuring in plugin
+  grunt.log.header = function() {};
+
   // grunt.loadNpmTasks('grunt-http-server');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -120,9 +123,6 @@ module.exports = function(grunt) {
 
   // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
   grunt.registerTask('mkdocs-jwplayer', function() {
-
-    // surpress log headers for tasks occuring in plugin
-    grunt.log.header = function() {};
 
     // merge plugin config with any defined task options
     grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
