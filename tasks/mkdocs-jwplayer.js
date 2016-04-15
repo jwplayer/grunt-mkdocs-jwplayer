@@ -116,7 +116,7 @@ module.exports = function(grunt) {
     options = this.options({
       disable: [],
       server: {
-        host: '127.0.0.1',
+        hostname: '127.0.0.1',
         port: 8000,
         root: config.siteDir
       }
