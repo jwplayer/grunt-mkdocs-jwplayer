@@ -18,12 +18,8 @@ module.exports = function(grunt) {
   grunt.config('plugin', {
     siteDir: 'site',
     docsDir: 'docs',
-    disable: [],
-    server: {
-      hostname: '127.0.0.1',
-      port: 8000,
-      root: 'site'
-    }
+    isSource: false,
+    serve: false
   });
 
   var shh = {
@@ -65,7 +61,7 @@ module.exports = function(grunt) {
   // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
   // if it does not already exist
   grunt.registerTask('upgrade-local-mkdocs-jwplayer-pypi-package', function() {
-    if (grunt.config('plugin.disable').indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') == -1) {
+    if (grunt.config('plugin.isSource')) {
       if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
         var lastUpdated = grunt.file.read('.local-mkdocs-jwplayer-last-updated').trim();
         config['localThemeLastUpdated'] = lastUpdated;
@@ -111,20 +107,20 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('run-http-server', function() {
-    if (grunt.config('plugin.disable').indexOf('run-http-server') == -1) {
+    if (grunt.config('plugin.serve')) {
       grunt.config('connect', {
         server: {
           options: {
-            hostname: grunt.config('plugin.server.hostname'),
-            port: grunt.config('plugin.server.port'),
-            base: grunt.config('plugin.server.root'),
+            hostname: grunt.config('plugin.serve.hostname'),
+            port: grunt.config('plugin.serve.port'),
+            base: grunt.config('plugin.serve.root'),
             useAvailablePort: true,
             open: true,
             onCreateServer: function(server, connect, options) {
               shh.ok('Serving `' + grunt.config('plugin.siteDir')
                 + '` on http://'
-                + grunt.config('plugin.server.hostname') + ':'
-                + grunt.config('plugin.server.port') + '\n');
+                + grunt.config('plugin.serve.hostname') + ':'
+                + grunt.config('plugin.serve.port') + '\n');
               shh.ok('Press CTRL-C to stop server.\n');
             }
           }
@@ -135,7 +131,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('watch-for-modified-files', function() {
-    if (grunt.config('plugin.disable').indexOf('run-http-server') == -1) {
+    if (grunt.config('plugin.serve')) {
       grunt.config('watch', {
         files: ['**/*.md', 'mkdocs.yml'],
         tasks: [
@@ -151,6 +147,15 @@ module.exports = function(grunt) {
 
   // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
   grunt.registerMultiTask('mkdocs-jwplayer', function() {
+
+    // if serve task option was set to true, use default settings
+    if (this.options().serve === true) {
+      this.options().serve = {
+        hostname: '127.0.0.1',
+        port: 8000,
+        root: 'site'
+      }
+    }
 
     // merge plugin config with any defined task options
     grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
