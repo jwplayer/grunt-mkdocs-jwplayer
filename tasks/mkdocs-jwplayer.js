@@ -9,23 +9,18 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  // global config
-  var config = {};
-
   // read mkdocs yaml file and convert to json and make data accessible
   grunt.registerTask('get-mkdocs-yaml-config', function() {
-    // surpress log headers for tasks occuring in plugin
-    grunt.log.header = function() {};
     var mkdocsYml = yamljs.load('mkdocs.yml');
-    config.siteDir = mkdocsYml.site_dir || config.siteDir;
-    config.docsDir = mkdocsYml.docs_dir || config.docsDir;
+    grunt.config('plugin.siteDir', mkdocsYml.site_dir || config.siteDir);
+    grunt.config('plugin.docsDir', mkdocsYml.docs_dir || config.docsDir);
   });
 
   // every hour, local theme package will attempt to upgrade based on the
   // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
   // if it does not already exist
   grunt.registerTask('upgrade-local-mkdocs-jwplayer-pypi-package', function() {
-    if (config.disable.indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') == -1) {
+    if (grunt.config('plugin.disable').indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') == -1) {
       if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
         var lastUpdated = grunt.file.read('.local-mkdocs-jwplayer-last-updated').trim();
         config['localThemeLastUpdated'] = lastUpdated;
@@ -47,8 +42,6 @@ module.exports = function(grunt) {
 
   // run mkdocs build process
   grunt.registerTask('run-mkdocs-build', function() {
-    // surpress log headers for tasks occuring in plugin
-    grunt.log.header = function() {};
     shelljs.exec('mkdocs build', {
       silent: true
     });
@@ -56,9 +49,7 @@ module.exports = function(grunt) {
 
   // look for and compile custom markdown
   grunt.registerTask('compile-custom-markdown', function() {
-    // surpress log headers for tasks occuring in plugin
-    grunt.log.header = function() {};
-    grunt.file.recurse(config.siteDir, function callback(absPath, rootDir, subDir, filename) {
+    grunt.file.recurse(grunt.config('plugin.siteDir'), function callback(absPath, rootDir, subDir, filename) {
       if (filename.substr(filename.length - 4) == 'html') {
         var html = grunt.file.read(absPath);
         html = html.replace(/(\<[\s\S]\>){1}?(\^\^\^([\s\S]*?)\^\^\^)(<\/[\s\S]\>){1}?/g, function(match, g1, g2, g3, g4, offset, str) {
@@ -73,21 +64,20 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('run-http-server', function() {
-    if (config.disable.indexOf('run-http-server') == -1) {
+    if (grunt.config('plugin.disable').indexOf('run-http-server') == -1) {
       grunt.config('connect', {
         server: {
           options: {
-            hostname: config.server.hostname,
-            port: config.server.port,
-            base: config.server.root,
+            hostname: '<%= plugin.server.hostname %>',
+            port: '<%= plugin.server.port %>',
+            base: '<%= plugin.server.root %>',
             useAvailablePort: true,
             open: true,
             livereload: true,
             onCreateServer: function(server, connect, options) {
-              grunt.log.ok('Serving `' + config.siteDir
-                + '` on http://'
-                + config.server.hostname + ':'
-                + config.server.port)
+              grunt.log.ok('Serving `<%= plugin.siteDir %>` on http://'
+                + '<%= plugin.server.hostname %>:'
+                + '<%= plugin.server.port %>');
               grunt.log.writeln('Press CTRL-C to stop server.');
               grunt.config('watch', {
                 files: ['**/*.md', 'mkdocs.yml'],
@@ -113,7 +103,7 @@ module.exports = function(grunt) {
     grunt.log.header = function() {};
 
     // default options
-    config = this.options({
+    grunt.config('plugin', this.options({
       siteDir: 'site',
       docsDir: 'docs',
       disable: [],
@@ -122,7 +112,7 @@ module.exports = function(grunt) {
         port: 8000,
         root: 'site'
       }
-    });
+    }));
 
     // initial message
     grunt.log.writeln('Robot Matt is building your documentation... fleep florp flarp...');
