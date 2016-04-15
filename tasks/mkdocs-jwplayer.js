@@ -26,6 +26,24 @@ module.exports = function(grunt) {
     }
   });
 
+  var logrunt = {
+    ok: function(msg) {
+      grunt.log.muted = false;
+      grunt.log.ok(msg);
+      grunt.log.muted = true;
+    },
+    subhead: function(msg) {
+      grunt.log.muted = false;
+      grunt.log.subhead(msg);
+      grunt.log.muted = true;
+    },
+    writeln: function(msg) {
+      grunt.log.muted = false;
+      grunt.log.writeln(msg);
+      grunt.log.muted = true;
+    }
+  };
+
   // read mkdocs yaml file and convert to json and make data accessible
   grunt.registerTask('get-mkdocs-yaml-config', function() {
     var mkdocsYml = yamljs.load('mkdocs.yml');
@@ -53,9 +71,7 @@ module.exports = function(grunt) {
           silent: true
         });
         grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
-        grunt.log.muted = false;
-        grunt.log.ok('Upgraded `mkdocs-jwplayer` theme package.');
-        grunt.log.muted = true;
+        logrunt.ok('Upgraded `mkdocs-jwplayer` theme package.');
       }
     }
   });
@@ -81,9 +97,7 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
-    grunt.log.muted = false;
-    grunt.log.ok('Documentation built.');
-    grunt.log.muted = true;
+    logrunt.ok('Documentation built.');
   });
 
   grunt.registerTask('run-http-server', function() {
@@ -97,13 +111,11 @@ module.exports = function(grunt) {
             useAvailablePort: true,
             open: true,
             onCreateServer: function(server, connect, options) {
-              grunt.log.muted = false;
-              grunt.log.ok('Serving `' + grunt.config('plugin.siteDir')
+              logrunt.ok('Serving `' + grunt.config('plugin.siteDir')
                 + '` on http://'
                 + grunt.config('plugin.server.hostname') + ':'
                 + grunt.config('plugin.server.port') + '\n');
-              grunt.log.ok('Press CTRL-C to stop server.\n');
-              grunt.log.muted = true;
+              logrunt.ok('Press CTRL-C to stop server.\n');
             }
           }
         }
@@ -123,9 +135,7 @@ module.exports = function(grunt) {
         ]
       });
       grunt.task.run('watch');
-      grunt.log.muted = false;
-      grunt.log.ok('Watching for documentation changes...\n');
-      grunt.log.muted = true;
+      logrunt.ok('Watching for documentation changes...');
     }
   });
 
@@ -136,7 +146,8 @@ module.exports = function(grunt) {
     grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
 
     // initial message to user
-    grunt.log.subhead('Robot Matt is at your service...');
+
+    logrunt.subhead('Robot Matt is at your service...');
 
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
