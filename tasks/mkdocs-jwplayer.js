@@ -26,7 +26,7 @@ module.exports = function(grunt) {
     }
   });
 
-  var logrunt = {
+  var shh = {
     ok: function(msg) {
       grunt.log.muted = false;
       grunt.log.ok(msg);
@@ -76,7 +76,7 @@ module.exports = function(grunt) {
           silent: true
         });
         grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
-        logrunt.ok('Upgraded `mkdocs-jwplayer` theme package.');
+        shh.ok('Upgraded `mkdocs-jwplayer` theme package.');
       }
     }
   });
@@ -102,7 +102,7 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
-    logrunt.ok('Documentation built.');
+    shh.ok('Documentation built.');
   });
 
   grunt.registerTask('run-http-server', function() {
@@ -116,11 +116,11 @@ module.exports = function(grunt) {
             useAvailablePort: true,
             open: true,
             onCreateServer: function(server, connect, options) {
-              logrunt.ok('Serving `' + grunt.config('plugin.siteDir')
+              shh.ok('Serving `' + grunt.config('plugin.siteDir')
                 + '` on http://'
                 + grunt.config('plugin.server.hostname') + ':'
                 + grunt.config('plugin.server.port') + '\n');
-              logrunt.ok('Press CTRL-C to stop server.\n');
+              shh.ok('Press CTRL-C to stop server.\n');
             }
           }
         }
@@ -140,7 +140,7 @@ module.exports = function(grunt) {
         ]
       });
       grunt.task.run('watch');
-      logrunt.ok('Watching for documentation changes...');
+      shh.ok('Watching for documentation changes...');
     }
   });
 
@@ -151,7 +151,7 @@ module.exports = function(grunt) {
     grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
 
     // initial message to user
-    logrunt.subhead('Robot Matt is at your service...');
+    shh.subhead('Robot Matt is at your service...');
 
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
