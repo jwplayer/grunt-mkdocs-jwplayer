@@ -8,6 +8,7 @@ module.exports = function(grunt) {
 
   // surpress log headers for tasks occuring in plugin
   grunt.log.header = function() {};
+  grunt.log.muted = true;
 
   // grunt.loadNpmTasks('grunt-http-server');
   grunt.loadNpmTasks('grunt-contrib-connect');
