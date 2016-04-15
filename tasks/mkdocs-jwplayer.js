@@ -81,20 +81,25 @@ module.exports = function(grunt) {
                 + grunt.config('plugin.server.hostname') + ':'
                 + grunt.config('plugin.server.port'));
               grunt.log.writeln('Press CTRL-C to stop server.');
-              grunt.config('watch', {
-                files: ['**/*.md', 'mkdocs.yml'],
-                tasks: [
-                  'get-mkdocs-yaml-config',
-                  'run-mkdocs-build',
-                  'compile-custom-markdown'
-                ]
-              });
-              grunt.task.run('watch');
             }
           }
         }
       });
       grunt.task.run('connect');
+    }
+  });
+
+  grunt.registerTask('watch-for-modified-files', function() {
+    if (grunt.config('plugin.disable').indexOf('run-http-server') == -1) {
+      grunt.config('watch', {
+        files: ['**/*.md', 'mkdocs.yml'],
+        tasks: [
+          'get-mkdocs-yaml-config',
+          'run-mkdocs-build',
+          'compile-custom-markdown'
+        ]
+      });
+      grunt.task.run('watch');
     }
   });
 
@@ -125,6 +130,7 @@ module.exports = function(grunt) {
     grunt.task.run('run-mkdocs-build');
     grunt.task.run('compile-custom-markdown');
     grunt.task.run('run-http-server');
+    grunt.task.run('watch-for-modified-files');
 
   });
 
