@@ -2,12 +2,25 @@
 
 var yamljs = require('yamljs');
 var shelljs = require('shelljs');
+var objectMerge = require('object-merge');
 
 module.exports = function(grunt) {
 
   // grunt.loadNpmTasks('grunt-http-server');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
+
+  // default plugin config
+  grunt.config('plugin', {
+    siteDir: 'site',
+    docsDir: 'docs',
+    disable: [],
+    server: {
+      hostname: '127.0.0.1',
+      port: 8000,
+      root: 'site'
+    }
+  });
 
   // read mkdocs yaml file and convert to json and make data accessible
   grunt.registerTask('get-mkdocs-yaml-config', function() {
@@ -108,6 +121,13 @@ module.exports = function(grunt) {
 
     // surpress log headers for tasks occuring in plugin
     grunt.log.header = function() {};
+
+
+    grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
+
+    grunt.log.writeln(JSON.stringify(grunt.config('plugin'), null, 2));
+
+    return;
 
     // default options
     grunt.config('plugin', this.options({
