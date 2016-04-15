@@ -91,7 +91,6 @@ module.exports = function(grunt) {
             base: grunt.config('plugin.server.root'),
             useAvailablePort: true,
             open: true,
-            livereload: true,
             onCreateServer: function(server, connect, options) {
               grunt.log.ok('Serving `' + grunt.config('plugin.siteDir')
                 + '` on http://'
@@ -110,7 +109,6 @@ module.exports = function(grunt) {
     if (grunt.config('plugin.disable').indexOf('run-http-server') == -1) {
       grunt.log.header = function() {};
       grunt.config('watch', {
-        livereload: true,
         files: ['**/*.md', 'mkdocs.yml'],
         tasks: [
           'get-mkdocs-yaml-config',
