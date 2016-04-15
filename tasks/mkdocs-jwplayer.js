@@ -44,17 +44,20 @@ module.exports = function(grunt) {
       var now = Math.floor(Date.now() / 1000);
       var oneHourAgo = now - 3600;
       if (oneHourAgo > config['localThemeLastUpdated']) {
+        grunt.log.writeln('Upgrading `mkdocs-jwplayer`...');
         config['localThemeLastUpdated'] = now;
         shelljs.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall', {
           silent: true
         });
         grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
+        grunt.log.ok('Done!');
       }
     }
   });
 
   // run mkdocs build process
   grunt.registerTask('run-mkdocs-build', function() {
+    grunt.log.writeln('Building documentation...');
     shelljs.exec('mkdocs build', {
       silent: true
     });
@@ -62,7 +65,6 @@ module.exports = function(grunt) {
 
   // look for and compile custom markdown
   grunt.registerTask('compile-custom-markdown', function() {
-    grunt.log.writeln(grunt.config('plugin.siteDir'));
     grunt.file.recurse(grunt.config('plugin.siteDir'), function callback(absPath, rootDir, subDir, filename) {
       if (filename.substr(filename.length - 4) == 'html') {
         var html = grunt.file.read(absPath);
@@ -75,10 +77,12 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
+    grunt.log.ok('Done!');
   });
 
   grunt.registerTask('run-http-server', function() {
     if (grunt.config('plugin.disable').indexOf('run-http-server') == -1) {
+      grunt.log.writeln('Starting local server...');
       grunt.config('connect', {
         server: {
           options: {
@@ -122,27 +126,8 @@ module.exports = function(grunt) {
     // surpress log headers for tasks occuring in plugin
     grunt.log.header = function() {};
 
-
+    // merge plugin config with any defined task options
     grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
-
-    grunt.log.writeln(JSON.stringify(grunt.config('plugin'), null, 2));
-
-    return;
-
-    // default options
-    grunt.config('plugin', this.options({
-      siteDir: 'site',
-      docsDir: 'docs',
-      disable: [],
-      server: {
-        hostname: '127.0.0.1',
-        port: 8000,
-        root: 'site'
-      }
-    }));
-
-    // initial message
-    grunt.log.writeln('Robot Matt is building your documentation... fleep florp flarp...');
 
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
