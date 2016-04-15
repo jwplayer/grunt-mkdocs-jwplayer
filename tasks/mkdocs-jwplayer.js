@@ -75,7 +75,7 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
-    grunt.log.writeln('Documentation built.');
+    grunt.log.ok('Documentation built.');
   });
 
   grunt.registerTask('run-http-server', function() {
@@ -89,6 +89,7 @@ module.exports = function(grunt) {
             useAvailablePort: true,
             open: true,
             onCreateServer: function(server, connect, options) {
+              grunt.log.header = function() {};
               grunt.log.ok('Serving `' + grunt.config('plugin.siteDir')
                 + '` on http://'
                 + grunt.config('plugin.server.hostname') + ':'
