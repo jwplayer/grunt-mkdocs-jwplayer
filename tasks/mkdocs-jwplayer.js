@@ -76,9 +76,10 @@ module.exports = function(grunt) {
             open: true,
             livereload: true,
             onCreateServer: function(server, connect, options) {
-              grunt.log.ok('Serving `<%= plugin.siteDir %>` on http://'
-                + '<%= plugin.server.hostname %>:'
-                + '<%= plugin.server.port %>');
+              grunt.log.ok('Serving `' + grunt.config('plugin.siteDir')
+                + '` on http://'
+                + grunt.config('plugin.server.hostname') + ':'
+                + grunt.config('plugin.server.port'));
               grunt.log.writeln('Press CTRL-C to stop server.');
               grunt.config('watch', {
                 files: ['**/*.md', 'mkdocs.yml'],
