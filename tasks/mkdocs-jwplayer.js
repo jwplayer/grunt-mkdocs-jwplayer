@@ -106,10 +106,6 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.event.on('watch', function(action, filepath, target) {
-    grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
-  });
-
   grunt.registerTask('watch-for-modified-files', function() {
     if (grunt.config('plugin.disable').indexOf('run-http-server') == -1) {
       grunt.log.header = function() {};
