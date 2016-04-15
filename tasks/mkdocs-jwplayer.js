@@ -86,8 +86,8 @@ module.exports = function(grunt) {
             onCreateServer: function(server, connect, options) {
               grunt.log.ok('Serving `' + config.siteDir
                 + '` on http://'
-                + options.server.host + ':'
-                + options.server.port)
+                + this.hostname + ':'
+                + this.port)
               grunt.log.writeln('Press CTRL-C to stop server.');
               grunt.config('watch', {
                 files: ['**/*.md'],
