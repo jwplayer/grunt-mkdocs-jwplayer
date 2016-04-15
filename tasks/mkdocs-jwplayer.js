@@ -44,20 +44,18 @@ module.exports = function(grunt) {
       var now = Math.floor(Date.now() / 1000);
       var oneHourAgo = now - 3600;
       if (oneHourAgo > config['localThemeLastUpdated']) {
-        grunt.log.writeln('Upgrading `mkdocs-jwplayer`...');
         config['localThemeLastUpdated'] = now;
         shelljs.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall', {
           silent: true
         });
         grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
-        grunt.log.ok('Done!');
+        grunt.log.ok('Upgraded `mkdocs-jwplayer` theme package.');
       }
     }
   });
 
   // run mkdocs build process
   grunt.registerTask('run-mkdocs-build', function() {
-    grunt.log.writeln('Building documentation...');
     shelljs.exec('mkdocs build', {
       silent: true
     });
@@ -77,12 +75,11 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
-    grunt.log.ok('Done!');
+    grunt.log.writeln('Documentation built.');
   });
 
   grunt.registerTask('run-http-server', function() {
     if (grunt.config('plugin.disable').indexOf('run-http-server') == -1) {
-      grunt.log.writeln('Starting local server...');
       grunt.config('connect', {
         server: {
           options: {
@@ -95,8 +92,8 @@ module.exports = function(grunt) {
               grunt.log.ok('Serving `' + grunt.config('plugin.siteDir')
                 + '` on http://'
                 + grunt.config('plugin.server.hostname') + ':'
-                + grunt.config('plugin.server.port'));
-              grunt.log.ok('Press CTRL-C to stop server.');
+                + grunt.config('plugin.server.port') + '\n');
+              grunt.log.ok('Press CTRL-C to stop server.\n');
             }
           }
         }
