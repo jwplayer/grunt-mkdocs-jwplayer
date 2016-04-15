@@ -1,50 +1,34 @@
-/*
- * grunt-mkdocs-player
- * https://github.com/jwplayer/grunt-mkdocs-jwplayer
- *
- * Copyright (c) 2016 JW Player
- * Licensed under the none license.
- */
-
 'use strict';
 
-var server = require('http-server');
 var yamljs = require('yamljs');
 var shelljs = require('shelljs');
-var watch = require('watch');
 
 module.exports = function(grunt) {
 
+  // grunt.loadNpmTasks('grunt-http-server');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+
+  // global config
   var config = {
     siteDir: 'site',
     docsDir: 'docs'
   };
+
+  // global options
   var options = {};
 
-  // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
-  grunt.registerTask('mkdocs-jwplayer', function() {
-
-    // default options
-    options = this.options({
-      disable: [],
-      server: {
-        host: '127.0.0.1',
-        port: 8282,
-        runInBackground: true
-      }
-    });
-
-    // initial message
-    grunt.log.writeln('Building documentation...');
-
-    // read mkdocs yaml file and convert to json and make data accessible
+  // read mkdocs yaml file and convert to json and make data accessible
+  grunt.registerTask('get-mkdocs-yaml-config', function() {
     var mkdocsYml = yamljs.load('mkdocs.yml');
     config.siteDir = mkdocsYml.site_dir || config.siteDir;
     config.docsDir = mkdocsYml.docs_dir || config.docsDir;
+  });
 
-    // every hour, local theme package will attempt to upgrade based on the
-    // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
-    // if it does not already exist
+  // every hour, local theme package will attempt to upgrade based on the
+  // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
+  // if it does not already exist
+  grunt.registerTask('upgrade-local-mkdocs-jwplayer-pypi-package', function() {
     if (options.disable.indexOf('upgrade-local-mkdocs-jwplayer-pypi-package') == -1) {
       if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
         var lastUpdated = grunt.file.read('.local-mkdocs-jwplayer-last-updated').trim();
@@ -63,13 +47,17 @@ module.exports = function(grunt) {
         grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
       }
     }
+  });
 
-    // run mkdocs build process
+  // run mkdocs build process
+  grunt.registerTask('run-mkdocs-build', function() {
     shelljs.exec('mkdocs build', {
       silent: true
     });
+  });
 
-    // look for and compile custom markdown
+  // look for and compile custom markdown
+  grunt.registerTask('compile-custom-markdown', function() {
     grunt.file.recurse(config.siteDir, function callback(absPath, rootDir, subDir, filename) {
       if (filename.substr(filename.length - 4) == 'html') {
         var html = grunt.file.read(absPath);
@@ -82,22 +70,67 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
+  });
 
+  grunt.registerTask('run-http-server', function() {
     if (options.disable.indexOf('run-http-server') == -1) {
-      // run localhost server
-      shelljs.exec('node_modules/http-server/bin/http-server ' + config.siteDir + ' -p ' + options.server.port + ' -a ' + options.server.host, {
-        silent: true,
-        async: true
+      grunt.config('connect', {
+        server: {
+          options: {
+            hostname: options.server.hostname,
+            port: options.server.port,
+            base: options.server.root,
+            useAvailablePort: true,
+            open: true,
+            livereload: true,
+            onCreateServer: function(server, connect, options) {
+              grunt.log.ok('Serving `' + config.siteDir
+                + '` on http://'
+                + options.server.host + ':'
+                + options.server.port)
+              grunt.log.writeln('Press CTRL-C to stop server.');
+              grunt.config('watch', {
+                files: ['**/*.md'],
+                tasks: [
+                  'get-mkdocs-yaml-config',
+                  'run-mkdocs-build',
+                  'compile-custom-markdown'
+                ]
+              });
+              grunt.task.run('watch');
+            }
+          }
+        }
       });
-      grunt.log.ok('Serving `' + config.siteDir + '` on http://' + options.server.host + ':' + options.server.port)
-      grunt.log.writeln('Press CTRL-C to stop server.')
-      // listen for modified files that trigger rebuild while serving localhost
-      watch.watchTree(config.docsDir, function () {
-        grunt.log.writeln('test');
-      });
+      grunt.task.run('connect');
     }
+  });
 
-    // grunt.log.ok('Success!');
+  // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
+  grunt.registerTask('mkdocs-jwplayer', function() {
+
+    // surpress log headers for tasks occuring in plugin
+    grunt.log.header = function() {};
+
+    // default options
+    options = this.options({
+      disable: [],
+      server: {
+        host: '127.0.0.1',
+        port: 8000,
+        root: config.siteDir
+      }
+    });
+
+    // initial message
+    grunt.log.writeln('Robot Matt is building your documentation... fleep florp flarp...');
+
+    // run tasks
+    grunt.task.run('get-mkdocs-yaml-config');
+    grunt.task.run('upgrade-local-mkdocs-jwplayer-pypi-package');
+    grunt.task.run('run-mkdocs-build');
+    grunt.task.run('compile-custom-markdown');
+    grunt.task.run('run-http-server');
 
   });
 
