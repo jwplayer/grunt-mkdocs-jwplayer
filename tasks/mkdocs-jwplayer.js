@@ -84,7 +84,7 @@ module.exports = function(grunt) {
       var oneHourAgo = now - 3600;
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer')) {
         grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer', now);
-        shh.writeln('Upgrading `grunt-mkdocs-jwplayer` Grunt plugin...');
+        shh.writeln('\nUpgrading `grunt-mkdocs-jwplayer` Grunt plugin...');
         shelljs.exec('npm update grunt-mkdocs-jwplayer', {
           silent: true
         });
@@ -92,7 +92,7 @@ module.exports = function(grunt) {
       }
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')) {
         grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
-        shh.ok('Upgrading `mkdocs-jwplayer` theme package...');
+        shh.ok('\nUpgrading `mkdocs-jwplayer` theme package...');
         shelljs.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall', {
           silent: true
         });
@@ -159,9 +159,9 @@ module.exports = function(grunt) {
       grunt.config('watch', {
         files: ['**/*.md', 'mkdocs.yml'],
         tasks: [
+          'self-update',
           'write-watch-event-message',
           'get-mkdocs-yaml-config',
-          'self-update',
           'run-mkdocs-build',
           'compile-custom-markdown'
         ]
