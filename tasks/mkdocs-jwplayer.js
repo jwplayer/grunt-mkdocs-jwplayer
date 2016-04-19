@@ -34,11 +34,6 @@ module.exports = function(grunt) {
       grunt.log.ok(msg);
       grunt.log.muted = true;
     },
-    okln: function(msg) {
-      grunt.log.muted = false;
-      grunt.log.writeln(grunt.log.ok(msg));
-      grunt.log.muted = true;
-    },
     header: function(msg) {
       grunt.log.muted = false;
       grunt.log.header(msg);
@@ -89,19 +84,19 @@ module.exports = function(grunt) {
       var oneHourAgo = now - 3600;
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer')) {
         grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer', now);
-        shh.writeln('\nUpgrading `grunt-mkdocs-jwplayer` Grunt plugin...');
+        shh.subhead('Upgrading `grunt-mkdocs-jwplayer` Grunt plugin...');
         shelljs.exec('npm update grunt-mkdocs-jwplayer', {
           silent: true
         });
-        shh.ok('Success!');
+        shh.ok('Success!\n\n');
       }
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')) {
         grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
-        shh.writeln('\nUpgrading `mkdocs-jwplayer` theme package...');
+        shh.subhead('Upgrading `mkdocs-jwplayer` theme package...');
         shelljs.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall', {
           silent: true
         });
-        shh.ok('Success!');
+        shh.ok('Success!\n\n');
       }
       grunt.file.write('self-update-info.json', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
     }
@@ -129,7 +124,7 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
-    shh.okln('\nDocumentation built');
+    shh.ok('Documentation built\n\n');
   });
 
   // run localhost server is serve option is configured
@@ -172,13 +167,13 @@ module.exports = function(grunt) {
         ]
       });
       grunt.task.run('watch');
-      shh.writeln('\nWatching for documentation changes...');
+      shh.subhead('Watching for documentation changes...');
     }
   });
 
   // message to display when watch event occurs
   grunt.registerTask('write-watch-event-message', function() {
-    shh.writeln('\nRebuilding documentation...');
+    shh.subhead('Rebuilding documentation...');
   });
 
   // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
