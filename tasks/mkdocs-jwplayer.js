@@ -34,6 +34,11 @@ module.exports = function(grunt) {
       grunt.log.ok(msg);
       grunt.log.muted = true;
     },
+    okln: function(msg) {
+      grunt.log.muted = false;
+      grunt.log.writeln(grunt.log.ok(msg));
+      grunt.log.muted = true;
+    },
     header: function(msg) {
       grunt.log.muted = false;
       grunt.log.header(msg);
@@ -124,7 +129,7 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
-    shh.ok('\nDocumentation built');
+    shh.okln('\nDocumentation built');
   });
 
   // run localhost server is serve option is configured
