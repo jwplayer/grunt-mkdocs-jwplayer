@@ -69,16 +69,16 @@ module.exports = function(grunt) {
   grunt.registerTask('self-update', function() {
     if (!grunt.config('plugin.isSource')) {
       if (grunt.file.exists('self-update-info.json')) {
-        var info = grunt.file.read('self-update-info.json');
-        info['grunt-mkdocs-jwplayer'] = info['grunt-mkdocs-jwplayer'] || 0;
-        info['mkdocs-jwplayer'] = info['mkdocs-jwplayer'] || 0;
-        grunt.config('plugin.selfUpdateInfo', info);
+        var info = grunt.file.readJSON('self-update-info.json');
+        grunt.config('plugin.selfUpdateInfo', {
+          'grunt-mkdocs-jwplayer': info['grunt-mkdocs-jwplayer'] || 0,
+          'mkdocs-jwplayer': info['mkdocs-jwplayer'] || 0
+        });
       } else {
         grunt.config('plugin.selfUpdateInfo', {
           'grunt-mkdocs-jwplayer': 0,
           'mkdocs-jwplayer': 0
         });
-        grunt.file.write('self-update-info.json', grunt.config('plugin.selfUpdateInfo'));
       }
       var now = Math.floor(Date.now() / 1000);
       var oneHourAgo = now - 3600;
@@ -98,7 +98,7 @@ module.exports = function(grunt) {
         });
         shh.ok('Success!');
       }
-      grunt.file.write('self-update-info.json', grunt.config('plugin.selfUpdateInfo'));
+      grunt.file.write('self-update-info.json', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
     }
   });
 
