@@ -124,7 +124,7 @@ module.exports = function(grunt) {
         grunt.file.write(absPath, html);
       }
     });
-    shh.ok('Documentation built');
+    shh.ok('\nDocumentation built');
   });
 
   // run localhost server is serve option is configured
@@ -192,7 +192,7 @@ module.exports = function(grunt) {
     }
 
     // initial messages to user
-    shh.header('\nBuilding your documentation...\n');
+    shh.header('\nBuilding your documentation...');
 
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
