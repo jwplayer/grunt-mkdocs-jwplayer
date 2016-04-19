@@ -100,11 +100,12 @@ module.exports = function(grunt) {
     grunt.file.recurse(grunt.config('plugin.siteDir'), function callback(absPath, rootDir, subDir, filename) {
       if (filename.substr(filename.length - 4) == 'html') {
         var html = grunt.file.read(absPath);
-        html = html.replace(/(\<[\s\S]\>){1}?(\^\^\^([\s\S]*?)\^\^\^)(<\/[\s\S]\>){1}?/g, function(match, g1, g2, g3, g4, offset, str) {
-          return '<div class="output">' + g3.trim() + '</div>';
+        html = html.replace(/<\w+>\s?\^{3}([\s\S]*?)\^{3}\s?<\/\w+>/g, function(match, cg1, offset, str) {
+          return '<div class="output">' + cg1.trim() + '</div>';
         });
-        html = html.replace(/(\<[\s\S]\>){1}?(\!\!\!([a-z]+)([\s\S]*?)\!\!\!)(<\/[\s\S]\>){1}?/g, function(match, g1, g2, g3, g4, g5, offset, str) {
-          return '<div class="alert ' + g3.trim() + '">' + g4.trim() + '</div>';
+        html = html.replace(/<.+>\s?\!{3}([a-z]+)?([\s\S]*?)\!{3}\s?<\/.+>/g, function(match, cg1, cg2, offset, str) {
+          cg1 = cg1 || 'default';
+          return '<div class="alert ' + cg1.trim() + '">' + cg2.trim() + '</div>';
         });
         grunt.file.write(absPath, html);
       }
