@@ -98,7 +98,7 @@ module.exports = function(grunt) {
         });
         shh.ok('Success!');
       }
-      grunt.file.write('self-update-info.json', grunt.config('plugin.selfUpdateInfo'));
+      grunt.file.write('self-update-info.json', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
     }
   });
 
