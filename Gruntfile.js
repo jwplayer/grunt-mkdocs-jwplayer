@@ -42,12 +42,7 @@ module.exports = function(grunt) {
     // Configuration to be run (and then tested).
     'mkdocs-jwplayer': {
       options: {
-        test: '=== TEST OPTION ==='
-      },
-      build: {
-        files: {
-          'tmp/build': 'test/fixtures/build'
-        }
+        isSource: true
       }
     },
 

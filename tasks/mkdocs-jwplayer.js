@@ -58,33 +58,47 @@ module.exports = function(grunt) {
 
   // read mkdocs yaml file and convert to json and make data accessible
   grunt.registerTask('get-mkdocs-yaml-config', function() {
-    var mkdocsYml = yamljs.load('mkdocs.yml');
-    grunt.config('plugin.siteDir', mkdocsYml.site_dir || grunt.config('plugin.siteDir'));
-    grunt.config('plugin.docsDir', mkdocsYml.docs_dir || grunt.config('plugin.docsDir'));
+    if (!grunt.config('plugin.isSource')) {
+      var mkdocsYml = yamljs.load('mkdocs.yml');
+      grunt.config('plugin.siteDir', mkdocsYml.site_dir || grunt.config('plugin.siteDir'));
+      grunt.config('plugin.docsDir', mkdocsYml.docs_dir || grunt.config('plugin.docsDir'));
+    }
   });
 
-  // every hour, local theme package will attempt to upgrade based on the
-  // value stored in `.local-mkdocs-jwplayer-last-updated`, which is created
-  // if it does not already exist
-  grunt.registerTask('upgrade-local-mkdocs-jwplayer-pypi-package', function() {
+  // self-update package if a newer version is available
+  grunt.registerTask('self-update', function() {
     if (!grunt.config('plugin.isSource')) {
-      if (grunt.file.exists('.local-mkdocs-jwplayer-last-updated')) {
-        var lastUpdated = grunt.file.read('.local-mkdocs-jwplayer-last-updated').trim();
-        grunt.config('plugin.localThemeLastUpdated', lastUpdated);
+      if (grunt.file.exists('self-update-info.json')) {
+        var info = grunt.file.read('self-update-info.json');
+        info['grunt-mkdocs-jwplayer'] = info['grunt-mkdocs-jwplayer'] || 0;
+        info['mkdocs-jwplayer'] = info['mkdocs-jwplayer'] || 0;
+        grunt.config('plugin.selfUpdateInfo', info);
       } else {
-        grunt.file.write('.local-mkdocs-jwplayer-last-updated', 0);
-        grunt.config('plugin.localThemeLastUpdated', 0);
+        grunt.config('plugin.selfUpdateInfo', {
+          'grunt-mkdocs-jwplayer': 0,
+          'mkdocs-jwplayer': 0
+        });
+        grunt.file.write('self-update-info.json', grunt.config('plugin.selfUpdateInfo'));
       }
       var now = Math.floor(Date.now() / 1000);
       var oneHourAgo = now - 3600;
-      if (oneHourAgo > config['localThemeLastUpdated']) {
-        grunt.config('plugin.localThemeLastUpdated', now);
+      if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer')) {
+        grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer', now);
+        shh.writeln('Upgrading `grunt-mkdocs-jwplayer` Grunt plugin...');
+        shelljs.exec('npm update grunt-mkdocs-jwplayer', {
+          silent: true
+        });
+        shh.ok('Success!');
+      }
+      if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')) {
+        grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
+        shh.ok('Upgrading `mkdocs-jwplayer` theme package...');
         shelljs.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall', {
           silent: true
         });
-        grunt.file.write('.local-mkdocs-jwplayer-last-updated', now);
-        shh.ok('Upgraded `mkdocs-jwplayer` theme package.');
+        shh.ok('Success!');
       }
+      grunt.file.write('self-update-info.json', grunt.config('plugin.selfUpdateInfo'));
     }
   });
 
@@ -147,6 +161,7 @@ module.exports = function(grunt) {
         tasks: [
           'write-watch-event-message',
           'get-mkdocs-yaml-config',
+          'self-update',
           'run-mkdocs-build',
           'compile-custom-markdown'
         ]
@@ -177,11 +192,11 @@ module.exports = function(grunt) {
     }
 
     // initial messages to user
-    shh.header('\nRobot Matt is building your documentation...\n');
+    shh.header('\nBuilding your documentation...\n');
 
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
-    grunt.task.run('upgrade-local-mkdocs-jwplayer-pypi-package');
+    grunt.task.run('self-update');
     grunt.task.run('run-mkdocs-build');
     grunt.task.run('compile-custom-markdown');
     grunt.task.run('run-http-server');
