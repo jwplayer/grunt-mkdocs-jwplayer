@@ -66,6 +66,7 @@ module.exports = function(grunt) {
   grunt.registerTask('get-mkdocs-yaml-config', function() {
     if (!grunt.config('plugin.isSource')) {
       var mkdocsYml = yamljs.load('mkdocs.yml');
+      grunt.config('plugin.serve.root', mkdocsYml.site_dir || grunt.config('plugin.site_dir'));
       grunt.config('plugin.siteDir', mkdocsYml.site_dir || grunt.config('plugin.siteDir'));
       grunt.config('plugin.docsDir', mkdocsYml.docs_dir || grunt.config('plugin.docsDir'));
     }
