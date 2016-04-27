@@ -94,7 +94,7 @@ module.exports = function(grunt) {
         shelljs.exec('npm update grunt-mkdocs-jwplayer', {
           silent: true
         });
-        shh.ok('Success!');
+        shh.ok('Upgrade complete');
       }
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')) {
         grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
@@ -102,7 +102,7 @@ module.exports = function(grunt) {
         shelljs.exec('pip install mkdocs-jwplayer --upgrade --force-reinstall', {
           silent: true
         });
-        shh.ok('Success!');
+        shh.ok('Upgrade complete');
       }
       grunt.file.write('self-update-info.json', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
     }
