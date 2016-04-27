@@ -10,7 +10,7 @@ module.exports = function(grunt) {
   // grunt.log.header = function() {};
   grunt.log.muted = true;
 
-  // grunt.loadNpmTasks('grunt-http-server');
+  // load grunt plugins
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
@@ -134,7 +134,7 @@ module.exports = function(grunt) {
   });
 
   // run localhost server is serve option is configured
-  grunt.registerTask('run-http-server', function() {
+  grunt.registerTask('run-server', function() {
     if (grunt.config('plugin.serve')) {
       grunt.config('connect', {
         server: {
@@ -217,7 +217,7 @@ module.exports = function(grunt) {
     grunt.task.run('write-building-docs-message');
     grunt.task.run('run-mkdocs-build');
     grunt.task.run('compile-custom-markdown');
-    grunt.task.run('run-http-server');
+    grunt.task.run('run-server');
     grunt.task.run('watch-for-modified-files');
 
   });
