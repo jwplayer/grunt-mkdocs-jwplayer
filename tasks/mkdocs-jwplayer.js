@@ -74,8 +74,8 @@ module.exports = function(grunt) {
   // self-update package if a newer version is available
   grunt.registerTask('self-update', function() {
     if (!grunt.config('plugin.isSource')) {
-      if (grunt.file.exists('self-update-info.json')) {
-        var info = grunt.file.readJSON('self-update-info.json');
+      if (grunt.file.exists('.self-update-info')) {
+        var info = grunt.file.readJSON('.self-update-info');
         grunt.config('plugin.selfUpdateInfo', {
           'grunt-mkdocs-jwplayer': info['grunt-mkdocs-jwplayer'] || 0,
           'mkdocs-jwplayer': info['mkdocs-jwplayer'] || 0
@@ -104,7 +104,7 @@ module.exports = function(grunt) {
         });
         shh.ok('Upgrade complete');
       }
-      grunt.file.write('self-update-info.json', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
+      grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
     }
   });
 
