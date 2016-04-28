@@ -144,16 +144,8 @@ module.exports = function(grunt) {
   // run localhost server is serve option is configured
   grunt.registerTask('run-server', function() {
     if (grunt.config('plugin.serve')) {
-      portscanner.checkPortStatus(grunt.config('plugin.serve.port'), grunt.config('plugin.serve.hostname'), function(error, status) {
-        if (status == 'closed') {
-          portscanner.findAPortNotInUse(grunt.config('plugin.serve.port'), grunt.config('plugin.serve.port') + 50, grunt.config('plugin.serve.hostname'), function(error, port) {
-            if (error) {
-              shh.error(error);
-              return;
-            }
-            grunt.config('plugin.serve.port', port);
-          });
-        }
+      portscanner.findAPortNotInUse(grunt.config('plugin.serve.port'), grunt.config('plugin.serve.port') + 50, grunt.config('plugin.serve.hostname'), function(error, port) {
+        grunt.config('plugin.serve.port', port);
       });
       grunt.config('connect', {
         server: {
