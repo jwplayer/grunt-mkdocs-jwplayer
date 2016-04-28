@@ -152,7 +152,7 @@ module.exports = function(grunt) {
             useAvailablePort: true,
             open: true,
             onCreateServer: function(server, connect, options) {
-              shh.ok('Serving `' + grunt.config('plugin.siteDir'));
+              shh.ok('Now serving `' + grunt.config('plugin.siteDir') + '`...');
               shh.ok('Press CTRL-C to stop server');
             }
           }
