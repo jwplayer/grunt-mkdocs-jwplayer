@@ -3,7 +3,6 @@
 var yamljs = require('yamljs');
 var shelljs = require('shelljs');
 var objectMerge = require('object-merge');
-var portscanner = require('portscanner');
 
 module.exports = function(grunt) {
 
@@ -67,6 +66,20 @@ module.exports = function(grunt) {
       grunt.log.muted = true;
     }
   };
+
+  // find available port to serve
+  function getAvailablePort(port) {
+    portscanner.checkPortStatus(port, grunt.config('plugin.serve.hostname'), function(error, status) {
+      if (status == 'open') {
+        return port;
+      }
+      if (port == grunt.config('plugin.serve.port') + 50) {
+        shh.error('Unable to detect open port.');
+        return null;
+      }
+      getAvailablePort(port + 1);
+    });
+  }
 
   // read mkdocs yaml file and convert to json and make data accessible
   grunt.registerTask('get-mkdocs-yaml-config', function() {
@@ -144,9 +157,6 @@ module.exports = function(grunt) {
   // run localhost server is serve option is configured
   grunt.registerTask('run-server', function() {
     if (grunt.config('plugin.serve')) {
-      portscanner.findAPortNotInUse(grunt.config('plugin.serve.port'), grunt.config('plugin.serve.port') + 50, grunt.config('plugin.serve.hostname'), function(error, port) {
-        grunt.config('plugin.serve.port', port);
-      });
       grunt.config('connect', {
         server: {
           options: {
