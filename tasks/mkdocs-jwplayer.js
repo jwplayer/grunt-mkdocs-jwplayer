@@ -147,7 +147,6 @@ module.exports = function(grunt) {
             useAvailablePort: true,
             open: true,
             onCreateServer: function(server, connect, options) {
-              shh.writeln(options.port);
               shh.ok('Serving `' + grunt.config('plugin.siteDir')
                 + '` on http://'
                 + grunt.config('plugin.serve.hostname') + ':'
@@ -157,7 +156,10 @@ module.exports = function(grunt) {
           }
         }
       });
+      shh.unmute();
       grunt.task.run('connect');
+      shh.mute();
+
     }
   });
 
