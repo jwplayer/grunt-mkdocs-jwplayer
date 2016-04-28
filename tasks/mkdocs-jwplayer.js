@@ -1,8 +1,5 @@
 'use strict';
 
-var connect = require('connect');
-var http = require('http');
-var serveStatic = require('serve-static');
 var yamljs = require('yamljs');
 var shelljs = require('shelljs');
 var objectMerge = require('object-merge');
@@ -141,8 +138,6 @@ module.exports = function(grunt) {
   // run localhost server is serve option is configured
   grunt.registerTask('run-server', function() {
     if (grunt.config('plugin.serve')) {
-      connect(serveStatic(grunt.config('plugin.siteDir'))).listen(9001);
-      /*
       grunt.config('connect', {
         server: {
           options: {
@@ -162,7 +157,6 @@ module.exports = function(grunt) {
         }
       });
       grunt.task.run('connect');
-      */
     }
   });
 
