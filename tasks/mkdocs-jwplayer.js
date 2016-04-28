@@ -147,6 +147,7 @@ module.exports = function(grunt) {
             useAvailablePort: true,
             open: true,
             onCreateServer: function(server, connect, options) {
+              shh.json(options);
               shh.ok('Serving `' + grunt.config('plugin.siteDir')
                 + '` on ' + options.protocol
                 + options.hostname + ':'
