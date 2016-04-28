@@ -148,9 +148,9 @@ module.exports = function(grunt) {
             open: true,
             onCreateServer: function(server, connect, options) {
               shh.ok('Serving `' + grunt.config('plugin.siteDir')
-                + '` on http://'
-                + grunt.config('plugin.serve.hostname') + ':'
-                + grunt.config('plugin.serve.port'));
+                + '` on ' + options.protocol
+                + options.hostname + ':'
+                + options.port);
               shh.ok('Press CTRL-C to stop server');
             }
           }
