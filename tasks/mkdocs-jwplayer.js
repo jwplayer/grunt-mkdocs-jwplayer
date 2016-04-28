@@ -3,6 +3,7 @@
 var yamljs = require('yamljs');
 var shelljs = require('shelljs');
 var objectMerge = require('object-merge');
+var portscanner = require('portscanner');
 
 module.exports = function(grunt) {
 
@@ -38,6 +39,11 @@ module.exports = function(grunt) {
     ok: function(msg) {
       grunt.log.muted = false;
       grunt.log.ok(msg || '');
+      grunt.log.muted = true;
+    },
+    error: function(msg) {
+      grunt.log.muted = false;
+      grunt.log.error(msg || '');
       grunt.log.muted = true;
     },
     header: function(msg) {
@@ -138,13 +144,23 @@ module.exports = function(grunt) {
   // run localhost server is serve option is configured
   grunt.registerTask('run-server', function() {
     if (grunt.config('plugin.serve')) {
+      portscanner.checkPortStatus(grunt.config('plugin.serve.port'), grunt.config('plugin.serve.hostname'), function(error, status) {
+        if (status == 'closed') {
+          portscanner.findAPortNotInUse(grunt.config('plugin.serve.port'), grunt.config('plugin.serve.port') + 50, grunt.config('plugin.serve.hostname'), function(error, port) {
+            if (error) {
+              shh.error(error);
+              return;
+            }
+            grunt.config('plugin.serve.port', port);
+          });
+        }
+      });
       grunt.config('connect', {
         server: {
           options: {
             hostname: grunt.config('plugin.serve.hostname'),
             port: grunt.config('plugin.serve.port'),
             base: grunt.config('plugin.serve.root'),
-            useAvailablePort: true,
             open: true,
             onCreateServer: function(server, connect, options) {
               shh.ok('Serving `' + grunt.config('plugin.siteDir')
