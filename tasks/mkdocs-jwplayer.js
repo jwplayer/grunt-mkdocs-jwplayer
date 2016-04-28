@@ -147,11 +147,11 @@ module.exports = function(grunt) {
             useAvailablePort: true,
             open: true,
             onCreateServer: function(server, connect, options) {
-              shh.json(options);
+              shh.writeln(options.port);
               shh.ok('Serving `' + grunt.config('plugin.siteDir')
-                + '` on ' + options.protocol
-                + options.hostname + ':'
-                + options.port);
+                + '` on http://'
+                + grunt.config('plugin.serve.hostname') + ':'
+                + grunt.config('plugin.serve.port'));
               shh.ok('Press CTRL-C to stop server');
             }
           }
