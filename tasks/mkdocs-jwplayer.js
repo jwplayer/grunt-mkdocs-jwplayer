@@ -3,6 +3,7 @@
 var yamljs = require('yamljs');
 var shelljs = require('shelljs');
 var objectMerge = require('object-merge');
+var portscanner = require('portscanner');
 
 module.exports = function(grunt) {
 
@@ -173,6 +174,10 @@ module.exports = function(grunt) {
             }
           }
         }
+      });
+      portscanner.findAPortNotInUse(grunt.config('plugin.serve.port'), grunt.config('plugin.serve.port') + 50, grunt.config('plugin.serve.hostname'), function(error, port) {
+        grunt.config('connect.server.options.port', port);
+        shh.writeln(port);
       });
       grunt.task.run('connect');
     }
