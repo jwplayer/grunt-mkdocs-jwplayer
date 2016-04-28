@@ -156,10 +156,7 @@ module.exports = function(grunt) {
           }
         }
       });
-      shh.unmute();
       grunt.task.run('connect');
-      shh.mute();
-
     }
   });
 
