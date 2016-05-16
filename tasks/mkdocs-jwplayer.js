@@ -167,7 +167,7 @@ module.exports = function(grunt) {
   grunt.registerTask('watch-for-modified-files', function() {
     if (grunt.config('plugin.serve')) {
       grunt.config('watch', {
-        files: ['**/*.md', 'mkdocs.yml'],
+        files: ['**/*.md', 'mkdocs.yml', 'src/**/*', 'jwplayer/**/*'],
         tasks: [
           'self-update',
           'write-rebuilding-docs-message',
