@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 
   // surpress log headers for tasks occuring in plugin
   // grunt.log.header = function() {};
-  // grunt.log.muted = true;
+  grunt.log.muted = true;
 
   // load grunt plugins
   grunt.loadNpmTasks('grunt-contrib-connect');
@@ -106,7 +106,7 @@ module.exports = function(grunt) {
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')) {
         grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
         shh.writeln('Upgrading `mkdocs-jwplayer` theme package. Please wait...');
-        shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer@master#egg=jwplayer --upgrade --force-reinstall', {
+        shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer', {
           silent: true
         });
         shh.ok('Upgrade complete');
