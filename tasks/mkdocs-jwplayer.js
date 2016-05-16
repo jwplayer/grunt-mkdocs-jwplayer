@@ -106,7 +106,7 @@ module.exports = function(grunt) {
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')) {
         grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
         shh.writeln('Upgrading `mkdocs-jwplayer` theme package. Please wait...');
-        shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer', {
+        shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer --upgrade --force-reinstall', {
           silent: true
         });
         shh.ok('Upgrade complete');
