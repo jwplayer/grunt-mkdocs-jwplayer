@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 
   // surpress log headers for tasks occuring in plugin
   // grunt.log.header = function() {};
-  grunt.log.muted = true;
+  // grunt.log.muted = true;
 
   // load grunt plugins
   grunt.loadNpmTasks('grunt-contrib-connect');
