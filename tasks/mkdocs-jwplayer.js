@@ -98,7 +98,7 @@ module.exports = function(grunt) {
       var now = Math.floor(Date.now() / 1000);
       var oneHourAgo = now - 3600;
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer')
-          || grunt.config('plugin.deploy') !== true) {
+          && grunt.config('plugin.deploy') !== true) {
         grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer', now);
         shh.writeln('Upgrading `grunt-mkdocs-jwplayer` Grunt plugin. Please wait...');
         shelljs.exec('npm update grunt-mkdocs-jwplayer', {
