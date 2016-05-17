@@ -223,6 +223,8 @@ module.exports = function(grunt) {
       });
     }
 
+    shh.ok('TEST!!!!!');
+
     // initial messages to user
     shh.header('Running "mkdocs-jwplayer" task');
 
