@@ -98,16 +98,16 @@ module.exports = function(grunt) {
       var now = Math.floor(Date.now() / 1000);
       var oneHourAgo = now - 3600;
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer')
-          || grunt.config('plugin.deploy') === true) {
+          || grunt.config('plugin.deploy') !== true) {
         grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer', now);
         shh.writeln('Upgrading `grunt-mkdocs-jwplayer` Grunt plugin. Please wait...');
         shelljs.exec('npm update grunt-mkdocs-jwplayer', {
           silent: true
         });
         grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
-        shh.ok('Upgrade complete');
-        // shelljs.exec('grunt ' + grunt.config('plugin.target'));
-        // return;
+        shh.ok('Upgrade complete. Restarting process...');
+        shelljs.exec('grunt ' + grunt.config('plugin.target'));
+        return;
       }
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')
           || grunt.config('plugin.deploy') === true) {
