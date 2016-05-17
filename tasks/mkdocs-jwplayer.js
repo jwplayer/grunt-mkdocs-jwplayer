@@ -94,6 +94,7 @@ module.exports = function(grunt) {
           'mkdocs-jwplayer': 0
         });
       }
+      var restartTask = false;
       var now = Math.floor(Date.now() / 1000);
       var oneHourAgo = now - 3600;
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer')
@@ -103,7 +104,8 @@ module.exports = function(grunt) {
         shelljs.exec('npm update grunt-mkdocs-jwplayer', {
           silent: true
         });
-        shh.ok('Upgrade complete');
+        restartTask = true;
+        shh.ok('Upgrade complete. Restarting process...');
       }
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')
           || grunt.config('plugin.deploy') === true) {
@@ -115,6 +117,10 @@ module.exports = function(grunt) {
         shh.ok('Upgrade complete');
       }
       grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
+      if (restartTask) {
+        grunt.task.run('mkdocs-jwplayer');
+        return;
+      }
     }
   });
 
@@ -222,8 +228,6 @@ module.exports = function(grunt) {
         root: 'site'
       });
     }
-
-    shh.ok('TEST!!!!!');
 
     // initial messages to user
     shh.header('Running "mkdocs-jwplayer" task');
