@@ -19,7 +19,8 @@ module.exports = function(grunt) {
     siteDir: 'site',
     docsDir: 'docs',
     isSource: false,
-    serve: false
+    serve: false,
+    deploy: false
   });
 
   // shh
