@@ -107,24 +107,18 @@ module.exports = function(grunt) {
         grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
         shh.ok('Upgrade complete. Restarting process...');
         shelljs.exec('grunt ' + grunt.config('plugin.target'));
-      } else {
-        if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')
-            || grunt.config('plugin.deploy') === true) {
-          grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
-          shh.writeln('Upgrading `mkdocs-jwplayer` theme package. Please wait...');
-          shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer --upgrade --force-reinstall', {
-            silent: true
-          });
-          grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
-          shh.ok('Upgrade complete');
-        }
-        grunt.task.run('write-building-docs-message');
-        grunt.task.run('run-mkdocs-build');
-        grunt.task.run('compile-custom-markdown');
-        grunt.task.run('run-server');
-        grunt.task.run('watch-for-modified-files');
+        return;
       }
-
+      if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')
+          || grunt.config('plugin.deploy') === true) {
+        grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
+        shh.writeln('Upgrading `mkdocs-jwplayer` theme package. Please wait...');
+        shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer --upgrade --force-reinstall', {
+          silent: true
+        });
+        grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
+        shh.ok('Upgrade complete');
+      }
     }
   });
 
@@ -242,6 +236,11 @@ module.exports = function(grunt) {
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
     grunt.task.run('self-update');
+    grunt.task.run('write-building-docs-message');
+    grunt.task.run('run-mkdocs-build');
+    grunt.task.run('compile-custom-markdown');
+    grunt.task.run('run-server');
+    grunt.task.run('watch-for-modified-files');
 
   });
 
