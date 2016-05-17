@@ -105,9 +105,9 @@ module.exports = function(grunt) {
           silent: true
         });
         grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
-        shh.ok('Upgrade complete. Restarting process...');
-        shelljs.exec('grunt ' + grunt.config('plugin.target'));
-        return;
+        shh.ok('Upgrade complete');
+        // shelljs.exec('grunt ' + grunt.config('plugin.target'));
+        // return;
       }
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')
           || grunt.config('plugin.deploy') === true) {
@@ -215,8 +215,6 @@ module.exports = function(grunt) {
   // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
   grunt.registerMultiTask('mkdocs-jwplayer', function() {
 
-    shh.unmute();
-    shh.mute();
     shh.ok('!!!!!TEST!!!!!');
 
     // merge plugin config with any defined task options
