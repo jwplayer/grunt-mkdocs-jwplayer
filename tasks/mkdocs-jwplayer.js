@@ -177,11 +177,11 @@ module.exports = function(grunt) {
         files: [
           '**/*.md',
           '**/*.yml',
-          '**/*.less',
-          '**/*.html',
-          '**/*.js',
-          '**/*.png',
-          '**/*.svg'
+          'jwplayer/**/*.html',
+          'src/**/*.less',
+          'src/**/*.js',
+          'src/**/*.png',
+          'src/**/*.svg'
         ],
         tasks: [
           'self-update',
