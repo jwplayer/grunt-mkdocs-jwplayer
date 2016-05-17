@@ -106,7 +106,7 @@ module.exports = function(grunt) {
         });
         grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
         shh.ok('Upgrade complete. Restarting process...');
-        shelljs.exec('grunt mkdocs-jwplayer:' + grunt.config('plugin.target'));
+        shelljs.exec('SIGINT && grunt mkdocs-jwplayer:' + grunt.config('plugin.target'));
         return;
       }
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')
