@@ -215,8 +215,6 @@ module.exports = function(grunt) {
   // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
   grunt.registerMultiTask('mkdocs-jwplayer', function() {
 
-    shh.ok('!!!!!TEST!!!!!');
-
     // merge plugin config with any defined task options
     grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
 
