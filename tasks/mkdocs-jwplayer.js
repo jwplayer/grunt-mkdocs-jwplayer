@@ -96,7 +96,7 @@ module.exports = function(grunt) {
       var now = Math.floor(Date.now() / 1000);
       var oneHourAgo = now - 3600;
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer')
-          or grunt.config('plugin.deploy') === true) {
+          || grunt.config('plugin.deploy') === true) {
         grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer', now);
         shh.writeln('Upgrading `grunt-mkdocs-jwplayer` Grunt plugin. Please wait...');
         shelljs.exec('npm update grunt-mkdocs-jwplayer', {
@@ -105,7 +105,7 @@ module.exports = function(grunt) {
         shh.ok('Upgrade complete');
       }
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')
-          or grunt.config('plugin.deploy') === true) {
+          || grunt.config('plugin.deploy') === true) {
         grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
         shh.writeln('Upgrading `mkdocs-jwplayer` theme package. Please wait...');
         shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer --upgrade --force-reinstall', {
