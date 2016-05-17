@@ -118,7 +118,7 @@ module.exports = function(grunt) {
       }
       grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
       if (restartTask) {
-        grunt.task.run('mkdocs-jwplayer');
+        // shelljs.exec('grunt ');
         return;
       }
     }
@@ -216,6 +216,8 @@ module.exports = function(grunt) {
 
   // local build process for the JW Player's custom MkDocs theme "mkdocs-jwplayer"
   grunt.registerMultiTask('mkdocs-jwplayer', function() {
+
+    shh.ok(this.target);
 
     // merge plugin config with any defined task options
     grunt.config('plugin', objectMerge(grunt.config('plugin'), this.options()));
