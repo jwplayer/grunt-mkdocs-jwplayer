@@ -108,7 +108,7 @@ module.exports = function(grunt) {
         grunt.config('plugin.selfUpdate', true);
       }
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')
-          || grunt.config('plugin.deploy')) {
+          && !grunt.config('plugin.deploy')) {
         grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
         shh.writeln('Self-updating `mkdocs-jwplayer` Grunt plugin. Please wait...');
         shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer --upgrade --force-reinstall', {
