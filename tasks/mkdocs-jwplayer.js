@@ -119,6 +119,7 @@ module.exports = function(grunt) {
       grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
     }
     if (grunt.config('plugin.selfUpdate')) {
+      grunt.config('plugin.selfUpdate', false);
       shh.ok('Update complete.');
       if (grunt.config('plugin.target')) {
         shelljs.exec('grunt mkdocs-jwplayer:' + grunt.config('plugin.target'));
