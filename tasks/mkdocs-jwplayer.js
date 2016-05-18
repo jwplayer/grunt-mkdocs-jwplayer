@@ -132,6 +132,7 @@ module.exports = function(grunt) {
   // run mkdocs build process
   grunt.registerTask('run-mkdocs-build', function() {
     if (!grunt.config('plugin.selfUpdate')) {
+      shh.ok('mkdocs build');
       shelljs.exec('mkdocs build', {
         silent: true
       });
