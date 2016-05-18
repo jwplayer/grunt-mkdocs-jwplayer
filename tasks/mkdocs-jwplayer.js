@@ -20,7 +20,8 @@ module.exports = function(grunt) {
     docsDir: 'docs',
     isSource: false,
     serve: false,
-    deploy: false
+    deploy: false,
+    selfUpdate: false
   });
 
   // shh
@@ -94,62 +95,65 @@ module.exports = function(grunt) {
           'mkdocs-jwplayer': 0
         });
       }
-      var restartTask = false;
       var now = Math.floor(Date.now() / 1000);
       var oneHourAgo = now - 3600;
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer')
-          && grunt.config('plugin.deploy') !== true) {
+          && !grunt.config('plugin.deploy')) {
         grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer', now);
-        shh.writeln('Upgrading `grunt-mkdocs-jwplayer` Grunt plugin. Please wait...');
+        shh.writeln('Self-updating `grunt-mkdocs-jwplayer` Grunt plugin. Please wait...');
         shelljs.exec('npm update grunt-mkdocs-jwplayer', {
           silent: true
         });
-        grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
-        shh.ok('Upgrade complete. Restarting process...');
-        shelljs.exec('grunt ' + grunt.config('plugin.target'));
-        return;
+        grunt.config('plugin.selfUpdate', true);
       }
       if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')
-          || grunt.config('plugin.deploy') === true) {
+          && !grunt.config('plugin.deploy')) {
         grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
-        shh.writeln('Upgrading `mkdocs-jwplayer` theme package. Please wait...');
+        shh.writeln('Self-updating `mkdocs-jwplayer` Grunt plugin. Please wait...');
         shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer --upgrade --force-reinstall', {
           silent: true
         });
-        grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
-        shh.ok('Upgrade complete');
+        grunt.config('plugin.selfUpdate', true);
       }
+      grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
+    }
+    if (grunt.config('plugin.selfUpdate')) {
+      shh.ok('Update complete. Please run your command again!');
     }
   });
 
   // run mkdocs build process
   grunt.registerTask('run-mkdocs-build', function() {
-    shelljs.exec('mkdocs build', {
-      silent: true
-    });
+    if (!grunt.config('plugin.selfUpdate')) {
+      shelljs.exec('mkdocs build', {
+        silent: true
+      });
+    }
   });
 
   // look for and compile custom markdown
   grunt.registerTask('compile-custom-markdown', function() {
-    grunt.file.recurse(grunt.config('plugin.siteDir'), function callback(absPath, rootDir, subDir, filename) {
-      if (filename.substr(filename.length - 4) == 'html') {
-        var html = grunt.file.read(absPath);
-        html = html.replace(/<\w+>\s?\^{3}([\s\S]*?)\^{3}\s?<\/\w+>/g, function(match, cg1, offset, str) {
-          return '<div class="output">' + cg1.trim() + '</div>';
-        });
-        html = html.replace(/<.+>\s?\!{3}([a-z]+)?([\s\S]*?)\!{3}\s?<\/.+>/g, function(match, cg1, cg2, offset, str) {
-          cg1 = cg1 || 'default';
-          return '<div class="alert ' + cg1.trim() + '">' + cg2.trim() + '</div>';
-        });
-        grunt.file.write(absPath, html);
-      }
-    });
-    shh.ok('Documentation built');
+    if (!grunt.config('plugin.selfUpdate')) {
+      grunt.file.recurse(grunt.config('plugin.siteDir'), function callback(absPath, rootDir, subDir, filename) {
+        if (filename.substr(filename.length - 4) == 'html') {
+          var html = grunt.file.read(absPath);
+          html = html.replace(/<\w+>\s?\^{3}([\s\S]*?)\^{3}\s?<\/\w+>/g, function(match, cg1, offset, str) {
+            return '<div class="output">' + cg1.trim() + '</div>';
+          });
+          html = html.replace(/<.+>\s?\!{3}([a-z]+)?([\s\S]*?)\!{3}\s?<\/.+>/g, function(match, cg1, cg2, offset, str) {
+            cg1 = cg1 || 'default';
+            return '<div class="alert ' + cg1.trim() + '">' + cg2.trim() + '</div>';
+          });
+          grunt.file.write(absPath, html);
+        }
+      });
+      shh.ok('Documentation built');
+    }
   });
 
   // run localhost server is serve option is configured
   grunt.registerTask('run-server', function(port) {
-    if (grunt.config('plugin.serve')) {
+    if (!grunt.config('plugin.selfUpdate') && grunt.config('plugin.serve')) {
       grunt.config('connect', {
         server: {
           options: {
@@ -199,7 +203,9 @@ module.exports = function(grunt) {
 
   // message to display during initial documentation build
   grunt.registerTask('write-building-docs-message', function() {
-    shh.writeln('Building documentation...');
+    if (!grunt.config('plugin.selfUpdate')) {
+      shh.writeln('Building documentation...');
+    }
   });
 
   // message to display when watch event occurs
