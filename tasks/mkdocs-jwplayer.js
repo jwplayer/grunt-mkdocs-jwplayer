@@ -111,7 +111,7 @@ module.exports = function(grunt) {
           && !grunt.config('plugin.deploy')) {
         grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
         shh.writeln('Self-updating `mkdocs-jwplayer` Grunt plugin. Please wait...');
-        shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer --upgrade --force-reinstall', {
+        shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer --user --upgrade --force-reinstall', {
           silent: true
         });
         grunt.config('plugin.selfUpdate', true);
@@ -132,7 +132,7 @@ module.exports = function(grunt) {
   // run mkdocs build process
   grunt.registerTask('run-mkdocs-build', function() {
     if (!grunt.config('plugin.selfUpdate')) {
-      shelljs.exec('mkdocs build', {
+      shelljs.exec('mkdocs build --clean', {
         silent: true
       });
     }
