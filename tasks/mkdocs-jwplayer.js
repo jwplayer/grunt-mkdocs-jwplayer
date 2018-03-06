@@ -83,50 +83,50 @@ module.exports = function(grunt) {
 
   // self-update package if a newer version is available
  grunt.registerTask('self-update', function() {
-  //   if (!grunt.config('plugin.isSource')) {
-  //     if (grunt.file.exists('.self-update-info')) {
-  //       var info = grunt.file.readJSON('.self-update-info');
-  //       grunt.config('plugin.selfUpdateInfo', {
-  //         'grunt-mkdocs-jwplayer': info['grunt-mkdocs-jwplayer'] || 0,
-  //         'mkdocs-jwplayer': info['mkdocs-jwplayer'] || 0
-  //       });
-  //     } else {
-  //       grunt.config('plugin.selfUpdateInfo', {
-  //         'grunt-mkdocs-jwplayer': 0,
-  //         'mkdocs-jwplayer': 0
-  //       });
-  //     }
-  //     var now = Math.floor(Date.now() / 1000);
-  //     var oneHourAgo = now - 3600;
-  //     if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer')
-  //         && !grunt.config('plugin.deploy')) {
-  //       grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer', now);
-  //       shh.writeln('Self-updating `grunt-mkdocs-jwplayer` Grunt plugin. Please wait...');
-  //       shelljs.exec('npm update grunt-mkdocs-jwplayer', {
-  //         silent: true
-  //       });
-  //       grunt.config('plugin.selfUpdate', true);
-  //     }
-  //     if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')
-  //         && !grunt.config('plugin.deploy')) {
-  //       grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
-  //       shh.writeln('Self-updating `mkdocs-jwplayer` Grunt plugin. Please wait...');
-  //       shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer --user --upgrade --force-reinstall', {
-  //         silent: true
-  //       });
-  //       grunt.config('plugin.selfUpdate', true);
-  //     }
-  //     grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
-  //   }
-  //   if (grunt.config('plugin.selfUpdate')) {
-  //     grunt.config('plugin.selfUpdate', false);
-  //     shh.ok('Update complete.');
-  //     if (grunt.config('plugin.target')) {
-  //       shelljs.exec('grunt mkdocs-jwplayer:' + grunt.config('plugin.target'));
-  //     } else {
-  //       shelljs.exec('grunt mkdocs-jwplayer');
-  //     }
-  //   }
+    if (!grunt.config('plugin.isSource')) {
+      if (grunt.file.exists('.self-update-info')) {
+        var info = grunt.file.readJSON('.self-update-info');
+        grunt.config('plugin.selfUpdateInfo', {
+          'grunt-mkdocs-jwplayer': info['grunt-mkdocs-jwplayer'] || 0,
+          'mkdocs-jwplayer': info['mkdocs-jwplayer'] || 0
+        });
+      } else {
+        grunt.config('plugin.selfUpdateInfo', {
+          'grunt-mkdocs-jwplayer': 0,
+          'mkdocs-jwplayer': 0
+        });
+      }
+      var now = Math.floor(Date.now() / 1000);
+      var oneHourAgo = now - 3600;
+      if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer')
+          && !grunt.config('plugin.deploy')) {
+        grunt.config('plugin.selfUpdateInfo.grunt-mkdocs-jwplayer', now);
+        shh.writeln('Self-updating `grunt-mkdocs-jwplayer` Grunt plugin. Please wait...');
+        shelljs.exec('npm update grunt-mkdocs-jwplayer', {
+          silent: true
+        });
+        grunt.config('plugin.selfUpdate', true);
+      }
+      if (oneHourAgo > grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer')
+          && !grunt.config('plugin.deploy')) {
+        grunt.config('plugin.selfUpdateInfo.mkdocs-jwplayer', now);
+        shh.writeln('Self-updating `mkdocs-jwplayer` Grunt plugin. Please wait...');
+        shelljs.exec('pip install git+ssh://git@github.com/jwplayer/mkdocs-jwplayer --user --upgrade --force-reinstall', {
+          silent: true
+        });
+        grunt.config('plugin.selfUpdate', true);
+      }
+      grunt.file.write('.self-update-info', JSON.stringify(grunt.config('plugin.selfUpdateInfo')));
+    }
+    if (grunt.config('plugin.selfUpdate')) {
+      grunt.config('plugin.selfUpdate', false);
+      shh.ok('Update complete.');
+      if (grunt.config('plugin.target')) {
+        shelljs.exec('grunt mkdocs-jwplayer:' + grunt.config('plugin.target'));
+      } else {
+        shelljs.exec('grunt mkdocs-jwplayer');
+      }
+    }
   });
 
   // run mkdocs build process
@@ -248,7 +248,7 @@ module.exports = function(grunt) {
 
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
-    //grunt.task.run('self-update');
+    grunt.task.run('self-update');
     grunt.task.run('write-building-docs-message');
     grunt.task.run('run-mkdocs-build');
     grunt.task.run('compile-custom-markdown');
