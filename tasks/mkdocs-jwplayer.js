@@ -248,7 +248,7 @@ module.exports = function(grunt) {
 
     // run tasks
     grunt.task.run('get-mkdocs-yaml-config');
-    // grunt.task.run('self-update');
+    grunt.task.run('self-update');
     grunt.task.run('write-building-docs-message');
     grunt.task.run('run-mkdocs-build');
     grunt.task.run('compile-custom-markdown');
